@@ -2,7 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Read the CSV data into a pandas DataFrame
-df = pd.read_csv("forward_log.csv")
+name = "backward_log"
+df = pd.read_csv(f"{name}.csv")
 
 # Plot for loss and val_loss
 plt.figure(figsize=(10, 5))
@@ -14,7 +15,7 @@ plt.title('Training and Validation Loss')
 plt.legend()
 plt.grid(True)
 # plt.show()
-plt.savefig('loss_plot.png')  # Save the plot as loss_plot.png
+plt.savefig(f'{name}_loss_plot.png')  # Save the plot as loss_plot.png
 
 
 # Plot for rel_l2_error1 and val_rel_l2_error1
@@ -27,4 +28,4 @@ plt.title('Training and Validation Relative L2 Error')
 plt.legend()
 plt.grid(True)
 # plt.show()
-plt.savefig('relative_error_plot.png')  # Save the plot as relative_error_plot.png
+plt.savefig(f'{name}_relative_error_plot.png')  # Save the plot as relative_error_plot.png
