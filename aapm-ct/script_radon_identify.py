@@ -7,7 +7,7 @@ import torchvision
 from data_management import Permute, load_ct_data
 from networks import RadonNet
 
-import panda as pd
+import pandas as pd
 
 
 # ----- load configuration -----
