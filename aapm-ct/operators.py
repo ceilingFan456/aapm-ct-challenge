@@ -59,40 +59,78 @@ def l2_error(X, X_ref, relative=False, squared=False, use_magnitude=True):
     return err_av.squeeze(), err
 
 
-# def fft1(x):
-#     """ 1-dimensional centered Fast Fourier Transform. """
-#     assert x.size(-1) == 2
-#     x = ifftshift(x, dim=(-2,))
-#     x = torch.fft(x, 1, normalized=True)
-#     x = fftshift(x, dim=(-2,))
-#     return x
+# Has a signature like torch.fft() but computes using torch.fft.fft
+def my_fft(input, signal_ndim, normalized=False):
+  if signal_ndim < 1 or signal_ndim > 3:
+    print("Signal ndim out of range, was", signal_ndim, "but expected a value between 1 and 3, inclusive")
+    return
 
+  dims = (-1)
+  if signal_ndim == 2:
+    dims = (-2, -1)
+  if signal_ndim == 3:
+    dims = (-3, -2, -1)
 
-# def ifft1(x):
-#     """ 1-dimensional centered Inverse Fast Fourier Transform. """
-#     assert x.size(-1) == 2
-#     x = ifftshift(x, dim=(-2,))
-#     x = torch.ifft(x, 1, normalized=True)
-#     x = fftshift(x, dim=(-2,))
-#     return x
+  norm = "backward"
+  if normalized:
+    norm = "ortho"
+
+  return torch.view_as_real(torch.fft.fftn(torch.view_as_complex(input), dim=dims, norm=norm))
+
+def my_ifft(input, signal_ndim, normalized=False):
+    if signal_ndim < 1 or signal_ndim > 3:
+        print("Signal ndim out of range, was", signal_ndim, "but expected a value between 1 and 3, inclusive")
+        return
+    
+    dims = (-1,)
+    if signal_ndim == 2:
+        dims = (-2, -1)
+    elif signal_ndim == 3:
+        dims = (-3, -2, -1)
+
+    norm = "backward"
+    if normalized:
+        norm = "ortho"
+    
+    return torch.view_as_real(torch.fft.ifftn(torch.view_as_complex(input), dim=dims, norm=norm))
+
 
 def fft1(x):
-    """1-dimensional centered Fast Fourier Transform."""
+    """ 1-dimensional centered Fast Fourier Transform. """
     assert x.size(-1) == 2
     x = ifftshift(x, dim=(-2,))
-    x_complex = torch.view_as_complex(x)
-    x_fft = torch.fft.fft(x_complex, dim=-2, norm="ortho")
-    x_fft = fftshift(torch.view_as_real(x_fft), dim=(-2,))
-    return x_fft
+    # x = torch.fft(x, 1, normalized=True)
+    x = my_fft(x, 1, normalized=True)
+    x = fftshift(x, dim=(-2,))
+    return x
+
 
 def ifft1(x):
-    """1-dimensional centered Inverse Fast Fourier Transform."""
+    """ 1-dimensional centered Inverse Fast Fourier Transform. """
     assert x.size(-1) == 2
     x = ifftshift(x, dim=(-2,))
-    x_complex = torch.view_as_complex(x)
-    x_ifft = torch.fft.ifft(x_complex, dim=-2, norm="ortho")
-    x_ifft = fftshift(torch.view_as_real(x_ifft), dim=(-2,))
-    return x_ifft
+    # x = torch.ifft(x, 1, normalized=True)
+    x = my_ifft(x, 1, normalized=True)
+    x = fftshift(x, dim=(-2,))
+    return x
+
+# def fft1(x):
+#     """1-dimensional centered Fast Fourier Transform."""
+#     assert x.size(-1) == 2
+#     x = ifftshift(x, dim=(-2,))
+#     x_complex = torch.view_as_complex(x)
+#     x_fft = torch.fft.fft(x_complex, dim=-2, norm="ortho")
+#     x_fft = fftshift(torch.view_as_real(x_fft), dim=(-2,))
+#     return x_fft
+
+# def ifft1(x):
+#     """1-dimensional centered Inverse Fast Fourier Transform."""
+#     assert x.size(-1) == 2
+#     x = ifftshift(x, dim=(-2,))
+#     x_complex = torch.view_as_complex(x)
+#     x_ifft = torch.fft.ifft(x_complex, dim=-2, norm="ortho")
+#     x_ifft = fftshift(torch.view_as_real(x_ifft), dim=(-2,))
+#     return x_ifft
 
 
 def roll(x, shift, dim):
