@@ -59,22 +59,40 @@ def l2_error(X, X_ref, relative=False, squared=False, use_magnitude=True):
     return err_av.squeeze(), err
 
 
+# def fft1(x):
+#     """ 1-dimensional centered Fast Fourier Transform. """
+#     assert x.size(-1) == 2
+#     x = ifftshift(x, dim=(-2,))
+#     x = torch.fft(x, 1, normalized=True)
+#     x = fftshift(x, dim=(-2,))
+#     return x
+
+
+# def ifft1(x):
+#     """ 1-dimensional centered Inverse Fast Fourier Transform. """
+#     assert x.size(-1) == 2
+#     x = ifftshift(x, dim=(-2,))
+#     x = torch.ifft(x, 1, normalized=True)
+#     x = fftshift(x, dim=(-2,))
+#     return x
+
 def fft1(x):
-    """ 1-dimensional centered Fast Fourier Transform. """
+    """1-dimensional centered Fast Fourier Transform."""
     assert x.size(-1) == 2
     x = ifftshift(x, dim=(-2,))
-    x = torch.fft(x, 1, normalized=True)
-    x = fftshift(x, dim=(-2,))
-    return x
-
+    x_complex = torch.view_as_complex(x)
+    x_fft = torch.fft.fft(x_complex, dim=-2, norm="ortho")
+    x_fft = fftshift(torch.view_as_real(x_fft), dim=(-2,))
+    return x_fft
 
 def ifft1(x):
-    """ 1-dimensional centered Inverse Fast Fourier Transform. """
+    """1-dimensional centered Inverse Fast Fourier Transform."""
     assert x.size(-1) == 2
     x = ifftshift(x, dim=(-2,))
-    x = torch.ifft(x, 1, normalized=True)
-    x = fftshift(x, dim=(-2,))
-    return x
+    x_complex = torch.view_as_complex(x)
+    x_ifft = torch.fft.ifft(x_complex, dim=-2, norm="ortho")
+    x_ifft = fftshift(torch.view_as_real(x_ifft), dim=(-2,))
+    return x_ifft
 
 
 def roll(x, shift, dim):
