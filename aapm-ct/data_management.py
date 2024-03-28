@@ -67,6 +67,9 @@ class CTDataset(torch.utils.data.Dataset):
         # choose directory according to subset
         if subset == "train":
             path = os.path.join(DATA_PATH, "training_data")
+            ## short cut 
+            if not leave_out: ## val set for forward training. 
+                path = os.path.join(DATA_PATH, "validation_data")
         elif subset == "val":
             path = os.path.join(DATA_PATH, "validation_data")
         elif subset == "test":
@@ -104,20 +107,20 @@ class CTDataset(torch.utils.data.Dataset):
         assert self.phantom.shape[0] == self.fbp.shape[0]
 
         # split dataset for cross validation
-        fold_len = self.phantom.shape[0] // folds
-        if not isinstance(num_fold, list):
-            num_fold = [num_fold]
-        p_list, s_list, f_list = [], [], []
-        for cur_fold in range(folds):
-            il = cur_fold * fold_len
-            ir = il + fold_len
-            if leave_out ^ (cur_fold in num_fold):
-                p_list.append(self.phantom[il:ir])
-                s_list.append(self.sinogram[il:ir])
-                f_list.append(self.fbp[il:ir])
-        self.phantom = np.concatenate(p_list, axis=0)
-        self.sinogram = np.concatenate(s_list, axis=0)
-        self.fbp = np.concatenate(f_list, axis=0)
+        # fold_len = self.phantom.shape[0] // folds
+        # if not isinstance(num_fold, list):
+        #     num_fold = [num_fold]
+        # p_list, s_list, f_list = [], [], []
+        # for cur_fold in range(folds):
+        #     il = cur_fold * fold_len
+        #     ir = il + fold_len
+        #     if leave_out ^ (cur_fold in num_fold):
+        #         p_list.append(self.phantom[il:ir])
+        #         s_list.append(self.sinogram[il:ir])
+        #         f_list.append(self.fbp[il:ir])
+        # self.phantom = np.concatenate(p_list, axis=0)
+        # self.sinogram = np.concatenate(s_list, axis=0)
+        # self.fbp = np.concatenate(f_list, axis=0)
 
         # transform numpy to torch tensor
         self.phantom = torch.tensor(self.phantom, dtype=torch.float)
@@ -161,6 +164,7 @@ def load_ct_data(subset, num_batches=4, **kwargs):
         num_batches = min(num_batches, 4)
     else:
         num_batches = 1
+    # num_batches = min(num_batches, 4) ## mod: shortcut
 
     return torch.utils.data.ConcatDataset(
         [

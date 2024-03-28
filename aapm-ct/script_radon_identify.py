@@ -7,6 +7,8 @@ import torchvision
 from data_management import Permute, load_ct_data
 from networks import RadonNet
 
+import panda as pd
+
 
 # ----- load configuration -----
 import config  # isort:skip
@@ -122,6 +124,10 @@ with open(
 radon_net = radon_net(**radon_params).to(device)
 print(list(radon_net.parameters()))
 
+logging = pd.DataFrame(
+    columns=["loss", "val_loss", "rel_l2_error", "val_rel_l2_error"]
+)
+
 for i in range(train_phases):
     train_params_cur = {}
     for key, value in train_params.items():
@@ -135,7 +141,10 @@ for i in range(train_phases):
 
     _specify_param(radon_net, i)
 
-    radon_net.train_on(train_data, val_data, **train_params_cur)
+    log = radon_net.train_on(train_data, val_data, **train_params_cur)
+    logging.append(log)
+
+logging.to_csv('forward_log.csv', index=False)
 
 # ------ bias correction -----
 
