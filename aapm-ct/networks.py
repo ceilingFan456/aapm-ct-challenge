@@ -394,6 +394,7 @@ class RadonNet(InvNet):
         return net
 
     def forward(self, inp):
+        print(f"in radonnet_forward, inp.shape={inp.shape}")
         if self.mode == "fwd":
             out = self.OpR.dot(inp)
         elif self.mode == "bwd":

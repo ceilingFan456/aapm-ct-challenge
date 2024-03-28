@@ -142,6 +142,7 @@ for i in range(train_phases):
     _specify_param(radon_net, i)
 
     log = radon_net.train_on(train_data, val_data, **train_params_cur)
+    print(f"log = {log}")
     logging.append(log)
     print(f"logging={logging}")
 
