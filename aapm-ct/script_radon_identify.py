@@ -143,6 +143,7 @@ for i in range(train_phases):
 
     log = radon_net.train_on(train_data, val_data, **train_params_cur)
     logging.append(log)
+    print(f"logging={logging}")
 
 logging.to_csv('forward_log.csv', index=False)
 
