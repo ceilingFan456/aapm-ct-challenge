@@ -8,6 +8,9 @@ from data_management import Permute, load_ct_data
 from networks import RadonNet
 
 
+import pandas as pd
+
+
 # ----- load configuration -----
 import config  # isort:skip
 
@@ -107,6 +110,10 @@ with open(
 
 # ------ construct network and train -----
 
+logging = pd.DataFrame(
+    columns=["loss", "val_loss", "rel_l2_error", "val_rel_l2_error"]
+)
+
 for i in range(train_phases):
     train_params_cur = {}
     for key, value in train_params.items():
@@ -118,4 +125,7 @@ for i in range(train_phases):
     for key, value in train_params_cur.items():
         print(key + ": " + str(value))
 
-    radon_net.train_on(train_data, val_data, **train_params_cur)
+    log = radon_net.train_on(train_data, val_data, **train_params_cur)
+    logging = logging.append(log, ignore_index=True)
+
+logging.to_csv('backward_log.csv', index=False)
