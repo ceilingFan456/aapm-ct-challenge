@@ -102,8 +102,8 @@ val_data_params = {
     "num_fold": 0,
     "leave_out": False,
 }
-train_data = load_ct_data("train", **train_data_params)
-val_data = load_ct_data("train", **val_data_params)
+train_data = load_ct_data("train", 1, **train_data_params)
+val_data = load_ct_data("train", 1, **val_data_params)
 
 # ------ save hyperparameters -------
 os.makedirs(train_params["save_path"][-1], exist_ok=True)
