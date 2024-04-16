@@ -106,6 +106,7 @@ class CTDataset(torch.utils.data.Dataset):
         assert self.phantom.shape[0] == self.sinogram.shape[0]
         assert self.phantom.shape[0] == self.fbp.shape[0]
 
+        print(f"path={path}")
         print(f"self.phantom.shape={self.phantom.shape}")
         print(f"self.sinogram.shape={self.sinogram.shape}")
 
