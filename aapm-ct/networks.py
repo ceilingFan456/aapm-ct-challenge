@@ -494,42 +494,64 @@ class RadonNet(InvNet):
 
         self._print_info()
 
+        # if self.mode == "fwd" or self.mode == "bwd":
+        #     logging = logging.append(
+        #         {
+        #             "loss": loss.item(),
+        #             "val_loss": v_loss.item(),
+        #             "rel_l2_error1": l2_error(
+        #                 pred, tar, relative=True, squared=False
+        #             )[0].item(),
+        #             "val_rel_l2_error1": l2_error(
+        #                 v_pred, v_tar, relative=True, squared=False
+        #             )[0].item(),
+        #         },
+        #         ignore_index=True,
+        #         sort=False,
+        #     )
+        # elif self.mode == "both" or self.mode == "chain":
+        #     logging = logging.append(
+        #         {
+        #             "loss": loss.item(),
+        #             "val_loss": v_loss.item(),
+        #             "rel_l2_error1": l2_error(
+        #                 pred[0], tar[0], relative=True, squared=False
+        #             )[0].item(),
+        #             "val_rel_l2_error1": l2_error(
+        #                 v_pred[0], v_tar[0], relative=True, squared=False
+        #             )[0].item(),
+        #             "rel_l2_error2": l2_error(
+        #                 pred[1], tar[1], relative=True, squared=False
+        #             )[0].item(),
+        #             "val_rel_l2_error2": l2_error(
+        #                 v_pred[1], v_tar[1], relative=True, squared=False
+        #             )[0].item(),
+        #         },
+        #         ignore_index=True,
+        #         sort=False,
+        #     )
+
+        ## replace append
         if self.mode == "fwd" or self.mode == "bwd":
-            logging = logging.append(
-                {
-                    "loss": loss.item(),
-                    "val_loss": v_loss.item(),
-                    "rel_l2_error1": l2_error(
-                        pred, tar, relative=True, squared=False
-                    )[0].item(),
-                    "val_rel_l2_error1": l2_error(
-                        v_pred, v_tar, relative=True, squared=False
-                    )[0].item(),
-                },
-                ignore_index=True,
-                sort=False,
-            )
+            new_data = pd.DataFrame([{
+                "loss": loss.item(),
+                "val_loss": v_loss.item(),
+                "rel_l2_error1": l2_error(pred, tar, relative=True, squared=False)[0].item(),
+                "val_rel_l2_error1": l2_error(v_pred, v_tar, relative=True, squared=False)[0].item(),
+            }])
+            logging = pd.concat([logging, new_data], ignore_index=True)
+            
         elif self.mode == "both" or self.mode == "chain":
-            logging = logging.append(
-                {
-                    "loss": loss.item(),
-                    "val_loss": v_loss.item(),
-                    "rel_l2_error1": l2_error(
-                        pred[0], tar[0], relative=True, squared=False
-                    )[0].item(),
-                    "val_rel_l2_error1": l2_error(
-                        v_pred[0], v_tar[0], relative=True, squared=False
-                    )[0].item(),
-                    "rel_l2_error2": l2_error(
-                        pred[1], tar[1], relative=True, squared=False
-                    )[0].item(),
-                    "val_rel_l2_error2": l2_error(
-                        v_pred[1], v_tar[1], relative=True, squared=False
-                    )[0].item(),
-                },
-                ignore_index=True,
-                sort=False,
-            )
+            new_data = pd.DataFrame([{
+                "loss": loss.item(),
+                "val_loss": v_loss.item(),
+                "rel_l2_error1": l2_error(pred[0], tar[0], relative=True, squared=False)[0].item(),
+                "val_rel_l2_error1": l2_error(v_pred[0], v_tar[0], relative=True, squared=False)[0].item(),
+                "rel_l2_error2": l2_error(pred[1], tar[1], relative=True, squared=False)[0].item(),
+                "val_rel_l2_error2": l2_error(v_pred[1], v_tar[1], relative=True, squared=False)[0].item(),
+            }])
+            logging = pd.concat([logging, new_data], ignore_index=True)
+
         print(logging.tail(1))
 
         if (epoch + 1) % save_epochs == 0:
