@@ -158,7 +158,7 @@ torch.save(
 )
 
 # compute and assign mean sinogram error
-sino_diff_mean = torch.zeros(128, 1024, device=device)
+sino_diff_mean = torch.zeros(1000, 513, device=device)
 data_load_train = torch.utils.data.DataLoader(train_data, 10, shuffle=False)
 with torch.no_grad():
     for i, v_batch in enumerate(reversed(list(data_load_train))):
