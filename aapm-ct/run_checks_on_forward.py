@@ -36,26 +36,23 @@ os.makedirs(results_dir, exist_ok=True)
 
 # Perform inference
 with torch.no_grad():
-    for i, (phantom, fbp, sinogram) in enumerate(data_loader):
+    for i, (phantom, sinogram, fbp) in enumerate(data_loader):
 
         print(f"phantom.shape={phantom.shape}")
         print(f"fbp.shape={fbp.shape}")
         print(f"sinogram.shape={sinogram.shape}")
 
-        inputs, targets = inputs.to(device), targets.to(device)
-        outputs = radon_net(inputs)
-
-        print(f"inputs.shape={inputs.shape} \ntargets.shape={targets.shape}")
-
+        phantom, sinogram = phantom.to(device), sinogram.to(device)
+        outputs = radon_net(phantom)
 
         # Calculate the difference
-        difference = torch.abs(targets - outputs)
+        difference = torch.abs(sinogram - outputs)
 
         print(difference.shape)
 
         # Save images
         save_image(outputs, os.path.join(results_dir, f"output_{i}.png"))
-        save_image(targets, os.path.join(results_dir, f"groundtruth_{i}.png"))
+        save_image(sinogram, os.path.join(results_dir, f"groundtruth_{i}.png"))
         save_image(difference, os.path.join(results_dir, f"difference_{i}.png"))
 
         print(f"Processed image {i+1}/{len(data_loader)}")
