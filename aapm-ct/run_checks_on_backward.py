@@ -49,7 +49,7 @@ val_data = load_ct_data("val", **val_data_params)
 data_loader = torch.utils.data.DataLoader(val_data, batch_size=1, shuffle=False)
 
 # Create directory for saving results
-results_dir = "inference_results_fwd"
+results_dir = "inference_results_bwd"
 os.makedirs(results_dir, exist_ok=True)
 
 # Perform inference
