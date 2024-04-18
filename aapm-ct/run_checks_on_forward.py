@@ -38,9 +38,10 @@ os.makedirs(results_dir, exist_ok=True)
 with torch.no_grad():
     for i, x in enumerate(data_loader):
 
-        print(f"x.shape={x.shape}")
+        print(f"len(x)={len(x)}")
+        print(f"x[0].shape={x[0].shape}")
         inputs, targets = x
-        
+
         inputs, targets = inputs.to(device), targets.to(device)
         outputs = radon_net(inputs)
 
