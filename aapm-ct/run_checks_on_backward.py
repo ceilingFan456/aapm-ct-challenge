@@ -31,8 +31,8 @@ def visualize_results(index, outputs, phantom, difference, results_dir):
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model_path = os.path.join(
     config.RESULTS_PATH,
-    "operator_radon_bwd_train_phase_0",
-    "model_weights_final.pt"
+    "operator_radon_bwd_train_phase_1",
+    "model_weights.pt"
 )
 d = torch.load(model_path, map_location=device)
 radon_net = RadonNet.new_from_state_dict(d)
