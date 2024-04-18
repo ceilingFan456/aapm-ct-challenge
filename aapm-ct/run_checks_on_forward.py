@@ -36,11 +36,11 @@ os.makedirs(results_dir, exist_ok=True)
 
 # Perform inference
 with torch.no_grad():
-    for i, x in enumerate(data_loader):
+    for i, (phantom, fbp, sinogram) in enumerate(data_loader):
 
-        print(f"len(x)={len(x)}")
-        print(f"x[0].shape={x[0].shape}")
-        inputs, targets = x
+        print(f"phantom.shape={phantom.shape}")
+        print(f"fbp.shape={fbp.shape}")
+        print(f"sinogram.shape={sinogram.shape}")
 
         inputs, targets = inputs.to(device), targets.to(device)
         outputs = radon_net(inputs)
