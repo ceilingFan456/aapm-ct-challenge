@@ -1,23 +1,34 @@
 import torch
 import os
 import numpy as np
+import matplotlib.pyplot as plt
 from torchvision.utils import save_image
 from networks import RadonNet
 from data_management import Permute, load_ct_data
 import config
 
-# Assuming 'RadonNet' and 'load_ct_data' have been defined in your scope as in the training script
+def visualize_results(index, outputs, sinogram, difference, results_dir):
+    fig, axes = plt.subplots(3, 1, figsize=(5, 15))
+    images = [outputs, sinogram, difference]
+    titles = ['Output', 'Ground Truth', 'Difference']
+
+    for ax, img, title in zip(axes, images, titles):
+        ax.imshow(img[0, 0].detach().cpu(), cmap='gray')
+        ax.set_title(title)
+        ax.axis('off')
+
+    plt.tight_layout()
+    fig.savefig(os.path.join(results_dir, f'combined_{index}.png'))
+    plt.close(fig)
 
 # Load the model
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-d = torch.load(
-    os.path.join(
-        config.RESULTS_PATH,
-        "operator_radon_fwd_train_phase_0",
-        "model_weights_final.pt",
-    ),
-    map_location=device,
+model_path = os.path.join(
+    config.RESULTS_PATH,
+    "operator_radon_fwd_train_phase_0",
+    "model_weights_final.pt"
 )
+d = torch.load(model_path, map_location=device)
 radon_net = RadonNet.new_from_state_dict(d)
 radon_net.to(device)
 
@@ -37,24 +48,12 @@ os.makedirs(results_dir, exist_ok=True)
 # Perform inference
 with torch.no_grad():
     for i, (phantom, sinogram, fbp) in enumerate(data_loader):
-
-        print(f"phantom.shape={phantom.shape}")
-        print(f"fbp.shape={fbp.shape}")
-        print(f"sinogram.shape={sinogram.shape}")
-
         phantom, sinogram = phantom.to(device), sinogram.to(device)
         outputs = radon_net(phantom)
-
-        # Calculate the difference
         difference = torch.abs(sinogram - outputs)
 
-        print(difference.shape)
-
-        # Save images
-        save_image(outputs, os.path.join(results_dir, f"output_{i}.png"))
-        save_image(sinogram, os.path.join(results_dir, f"groundtruth_{i}.png"))
-        save_image(difference, os.path.join(results_dir, f"difference_{i}.png"))
-
+        # Visualize and save combined image
+        visualize_results(i, outputs, sinogram, difference, results_dir)
         print(f"Processed image {i+1}/{len(data_loader)}")
 
 print("Inference complete. Results saved to:", results_dir)
