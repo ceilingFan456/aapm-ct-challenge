@@ -11,11 +11,17 @@ def visualize_results(index, outputs, sinogram, difference, results_dir):
     fig, axes = plt.subplots(3, 1, figsize=(5, 15))
     images = [outputs, sinogram, difference]
     titles = ['Output', 'Ground Truth', 'Difference']
+    
+    # Calculate the min and max across all images for a consistent scale
+    vmin = min(image.min().item() for image in images)
+    vmax = max(image.max().item() for image in images)
 
     for ax, img, title in zip(axes, images, titles):
-        ax.imshow(img[0, 0].detach().cpu(), cmap='gray')
+        im = ax.imshow(img[0, 0].detach().cpu(), cmap='viridis', vmin=vmin, vmax=vmax)
         ax.set_title(title)
         ax.axis('off')
+        # Add colorbar to each subplot
+        fig.colorbar(im, ax=ax, orientation='vertical')
 
     plt.tight_layout()
     fig.savefig(os.path.join(results_dir, f'combined_{index}.png'))
