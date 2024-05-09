@@ -400,6 +400,14 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         r_dir_x = p_detect_x * cs - p_detect_y * sn - r_p_source_x
         r_dir_y = p_detect_x * sn + p_detect_y * cs - r_p_source_y
 
+
+        ## debug
+        print(f"r_p_source_x.shape={r_p_source_x.shape}")
+        print(f"r_p_source_y.shape={r_p_source_y.shape}")
+        print(f"r_dir_x.shape={r_dir_x.shape}")
+        print(f"r_dir_y.shape={r_dir_y.shape}")
+        
+
         # find intersections of rays with circle for clipping
         if self.flat:
             max_gamma = torch.atan(
@@ -464,6 +472,13 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
             self.n[1] / 2.0 - 0.5
         )  # rescale image positions to [-1, 1]
         grid = torch.stack([grid_y, grid_x], dim=-1)
+
+
+        print(grid.shape)
+        print(grid)
+        print(torch.isnan(grid).any().item())
+
+
         inter = torch.nn.functional.grid_sample(
             x.expand((int(num_steps.detach().cpu().numpy()), -1, -1, -1)),
             grid,
