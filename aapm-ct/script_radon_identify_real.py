@@ -20,10 +20,10 @@ torch.cuda.set_device(0)
 
 # ----- network configuration -----
 radon_params = {
-    "n": [362, 362],
+    "n": [512, 512],
     "n_detect": 513,
     "angles": torch.linspace(0, 360, 1001, requires_grad=False)[:-1],
-    "d_source": torch.tensor(1000.00, requires_grad=False),
+    "d_source": torch.tensor(512.00, requires_grad=False),
     "s_detect": torch.tensor(-1.0, requires_grad=False),
     "scale": torch.tensor(0.01, requires_grad=False),
     "flat": True,
@@ -38,14 +38,19 @@ def _specify_param(radon_net, train_phase):
         radon_net.OpR.angles.requires_grad = False
         radon_net.OpR.d_source.requires_grad = False
         radon_net.OpR.scale.requires_grad = True
+        radon_net.OpR.d_detect.requires_grad = False
+
     elif train_phase % 3 == 1:
         radon_net.OpR.angles.requires_grad = False
         radon_net.OpR.d_source.requires_grad = True
         radon_net.OpR.scale.requires_grad = False
+        radon_net.OpR.d_detect.requires_grad = True
+
     elif train_phase % 3 == 2:
         radon_net.OpR.angles.requires_grad = True
         radon_net.OpR.d_source.requires_grad = False
         radon_net.OpR.scale.requires_grad = False
+        radon_net.OpR.d_detect.requires_grad = False
 
 
 # ----- training configuration -----
@@ -177,3 +182,11 @@ torch.save(
     radon_net.state_dict(),
     os.path.join(train_params["save_path"][-1], "model_weights_final.pt"),
 )
+
+# ------ save logging ------
+print("Model Parameters and their Values:")
+with open(os.path.join(train_params["save_path"][-1], "model_parameters.txt"), "w") as file:
+    for name, param in radon_net.state_dict().items():
+        file.write(f"Parameter Name: {name}, Shape: {param.shape}\n")
+        file.write(param)
+        file.write("\n\n")

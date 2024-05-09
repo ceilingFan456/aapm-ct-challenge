@@ -36,6 +36,7 @@ model_path = os.path.join(
 )
 d = torch.load(model_path, map_location=device)
 radon_net = RadonNet.new_from_state_dict(d)
+
 radon_net.to(device)
 
 # Load validation data

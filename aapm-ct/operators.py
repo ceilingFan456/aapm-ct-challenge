@@ -305,6 +305,7 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         n_detect,
         s_detect,
         flat=True,
+        parallel=False,
         filter_type="hamming",
         learn_inv_scale=False,
     ):
@@ -332,6 +333,7 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
             torch.zeros(*self.m), requires_grad=False,
         )
         self.flat = flat
+        self.parallel = parallel
         self.filter_type = filter_type
         self.inv_scale = torch.nn.Parameter(
             torch.tensor(1.0), requires_grad=learn_inv_scale
@@ -359,8 +361,14 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
 
     def forward(self, x):
         return self.dot(x)
-
+    
     def dot(self, x):
+        if self.parallel:
+            return self._dot_parallel(x)
+        else:
+            return self._dot_fan(x)
+
+    def _dot_fan(self, x):
         # detector positions
         s_range = (
             torch.arange(self.n_detect, device=self.n_detect.device).unsqueeze(
@@ -403,6 +411,105 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
                 self.d_source + self._d_detect()
             )
         radius = self.d_source * torch.sin(max_gamma)
+        a = r_dir_x * r_dir_x + r_dir_y * r_dir_y
+        b = r_p_source_x * r_dir_x + r_p_source_y * r_dir_y
+        c = (
+            r_p_source_x * r_p_source_x
+            + r_p_source_y * r_p_source_y
+            - radius * radius
+        )
+        ray_length_threshold = 1.0
+        discriminant_sqrt = torch.sqrt(
+            torch.max(
+                b * b - a * c,
+                torch.tensor(ray_length_threshold, device=x.device),
+            )
+        )
+        lambda_1 = (-b - discriminant_sqrt) / a
+        lambda_2 = (-b + discriminant_sqrt) / a
+
+        # clip ray accordingly
+        r_p_source_x = r_p_source_x + lambda_1 * r_dir_x
+        r_p_source_y = r_p_source_y + lambda_1 * r_dir_y
+        r_dir_x = r_dir_x * (lambda_2 - lambda_1)
+        r_dir_y = r_dir_y * (lambda_2 - lambda_1)
+
+        # use batch and channel dimensions for vectorized interpolation
+        original_dim = x.ndim
+        while x.ndim < 4:
+            x = x.unsqueeze(0)
+        assert x.shape[-3] == 1  # we can handle only single channel data
+        x = x.transpose(-4, -3)  # switch batch and channel dim
+
+        # integrate over ray
+        num_steps = torch.ceil(
+            torch.sqrt(r_dir_x * r_dir_x + r_dir_y * r_dir_y)
+        ).max()
+        diff_x = r_dir_x / num_steps
+        diff_y = r_dir_y / num_steps
+        steps = (
+            torch.arange(
+                int(num_steps.detach().cpu().numpy()), device=x.device
+            )
+            .unsqueeze(1)
+            .unsqueeze(1)
+        )
+        grid_x = r_p_source_x.unsqueeze(0) + steps * diff_x.unsqueeze(0)
+        grid_y = r_p_source_y.unsqueeze(0) + steps * diff_y.unsqueeze(0)
+
+        grid_x = grid_x / (
+            self.n[0] / 2.0 - 0.5
+        )  # rescale image positions to [-1, 1]
+        grid_y = grid_y / (
+            self.n[1] / 2.0 - 0.5
+        )  # rescale image positions to [-1, 1]
+        grid = torch.stack([grid_y, grid_x], dim=-1)
+        inter = torch.nn.functional.grid_sample(
+            x.expand((int(num_steps.detach().cpu().numpy()), -1, -1, -1)),
+            grid,
+            align_corners=True,
+        )
+
+        sino = inter.sum(dim=0, keepdim=True) * torch.sqrt(
+            diff_x * diff_x + diff_y * diff_y
+        ).unsqueeze(0).unsqueeze(0)
+
+        # undo batch and channel manipulations
+        sino = sino.transpose(-4, -3)  # unswitch batch and channel dim
+        while sino.ndim > original_dim:
+            sino = sino.squeeze(0)
+
+        return sino * self.scale + self.fwd_offset
+
+    def _dot_parallel(self, x):
+        # detector positions
+        s_range = (
+            torch.arange(self.n_detect, device=self.n_detect.device).unsqueeze(
+                0
+            )
+            - self.n_detect / 2.0
+            + 0.5
+        ) * self.s_detect
+
+        p_detect_x = s_range
+        p_detect_y = -self._d_detect()
+
+        # source position
+        p_source_x = s_range
+        p_source_y = self.d_source
+
+        # rotate rays from source to detector over all angles
+        pi = torch.acos(torch.zeros(1)).item() * 2.0
+        cs = torch.cos(self.angles * pi / 180.0).unsqueeze(1)
+        sn = torch.sin(self.angles * pi / 180.0).unsqueeze(1)
+        r_p_source_x = p_source_x * cs - p_source_y * sn
+        r_p_source_y = p_source_x * sn + p_source_y * cs
+        r_dir_x = p_detect_x * cs - p_detect_y * sn - r_p_source_x
+        r_dir_y = p_detect_x * sn + p_detect_y * cs - r_p_source_y
+
+        # find intersections of rays with circle for clipping
+        radius = self.d_source
+
         a = r_dir_x * r_dir_x + r_dir_y * r_dir_y
         b = r_p_source_x * r_dir_x + r_p_source_y * r_dir_y
         c = (

@@ -5,6 +5,7 @@ import gzip
 
 # Open the HDF5 file
 # file = h5py.File('./real_data_hdf5/ground_truth_test/ground_truth_test_000.hdf5', 'r')
+# file = h5py.File('./real_data_hdf5/observation_test/observation_test_027.hdf5', 'r')
 file = h5py.File('./real_data_hdf5/observation_test/observation_test_027.hdf5', 'r')
 
 data = file["data"]

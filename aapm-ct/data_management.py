@@ -93,6 +93,7 @@ class CTDataset(torch.utils.data.Dataset):
             )
         )
 
+
         if not subset == "val" and not subset == "test":
             self.phantom = np.load(
                 gzip.GzipFile(
@@ -106,10 +107,10 @@ class CTDataset(torch.utils.data.Dataset):
         assert self.phantom.shape[0] == self.sinogram.shape[0]
         assert self.phantom.shape[0] == self.fbp.shape[0]
 
-        print(f"DATAPATH={DATA_PATH}")
-        print(f"path={path}")
-        print(f"self.phantom.shape={self.phantom.shape}")
-        print(f"self.sinogram.shape={self.sinogram.shape}")
+        # print(f"DATAPATH={DATA_PATH}")
+        # print(f"path={path}")
+        # print(f"self.phantom.shape={self.phantom.shape}")
+        # print(f"self.sinogram.shape={self.sinogram.shape}")
 
         # split dataset for cross validation
         # fold_len = self.phantom.shape[0] // folds

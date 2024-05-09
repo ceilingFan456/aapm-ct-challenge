@@ -24,8 +24,8 @@ torch.cuda.set_device(0)
 d = torch.load(
     os.path.join(
         config.RESULTS_PATH,
-        "operator_radon_bwd_train_phase_1",
-        "model_weights.pt",
+        "operator_radon_fwd_train_phase_0",
+        "model_weights_final.pt",
     ),
     map_location=device,
 )
@@ -126,6 +126,6 @@ for i in range(train_phases):
         print(key + ": " + str(value))
 
     log = radon_net.train_on(train_data, val_data, **train_params_cur)
-    logging = pd.concat([logging, log], ignore_index=True) 
+    logging = logging.append(log, ignore_index=True)
 
 logging.to_csv('backward_log.csv', index=False)
