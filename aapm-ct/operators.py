@@ -576,6 +576,7 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         grid = torch.stack([grid_y, grid_x], dim=-1)
         print(grid.shape)
         print(grid)
+        print(np.isnan(grid).any())
 
         inter = torch.nn.functional.grid_sample(
             x.expand((int(num_steps.detach().cpu().numpy()), -1, -1, -1)),
