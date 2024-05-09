@@ -86,7 +86,7 @@ class CTDataset(torch.utils.data.Dataset):
                 os.path.join(path, "Sinogram_batch{}.npy.gz".format(batch)),
                 "r",
             )
-        )[:300,:,:]
+        )[:100,:,:]
         self.fbp = np.load(
             gzip.GzipFile(
                 os.path.join(path, "FBP128_batch{}.npy.gz".format(batch)), "r"
@@ -100,7 +100,7 @@ class CTDataset(torch.utils.data.Dataset):
                     os.path.join(path, "Phantom_batch{}.npy.gz".format(batch)),
                     "r",
                 )
-            )[:300,:,:]
+            )[:100,:,:]
         else:
             self.phantom = 0.0 * self.fbp  # no ground truth data exists here
 
