@@ -38,19 +38,18 @@ def _specify_param(radon_net, train_phase):
         radon_net.OpR.angles.requires_grad = False
         radon_net.OpR.d_source.requires_grad = False
         radon_net.OpR.scale.requires_grad = True
-        radon_net.OpR.d_detect.requires_grad = False
-
+        radon_net.OpR.s_detect.requires_grad = False
     elif train_phase % 3 == 1:
         radon_net.OpR.angles.requires_grad = False
         radon_net.OpR.d_source.requires_grad = True
         radon_net.OpR.scale.requires_grad = False
-        radon_net.OpR.d_detect.requires_grad = True
+        radon_net.OpR.s_detect.requires_grad = True
 
     elif train_phase % 3 == 2:
         radon_net.OpR.angles.requires_grad = True
         radon_net.OpR.d_source.requires_grad = False
         radon_net.OpR.scale.requires_grad = False
-        radon_net.OpR.d_detect.requires_grad = False
+        radon_net.OpR.s_detect.requires_grad = False
 
 
 # ----- training configuration -----
@@ -185,7 +184,10 @@ torch.save(
 
 # ------ save logging ------
 print("Model Parameters and their Values:")
-with open(os.path.join(train_params["save_path"][-1], "model_parameters.txt"), "w") as file:
+with open(
+    os.path.join(train_params["save_path"][-1], "model_parameters.txt"), "w"
+    
+) as file:
     for name, param in radon_net.state_dict().items():
         file.write(f"Parameter Name: {name}, Shape: {param.shape}\n")
         file.write(param)
