@@ -28,6 +28,7 @@ radon_params = {
     "scale": torch.tensor(0.01, requires_grad=False),
     "flat": True,
     "mode": "fwd",
+    "parallel": True
 }
 radon_net = RadonNet
 
