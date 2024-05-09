@@ -377,6 +377,9 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
             - self.n_detect / 2.0
             + 0.5
         ) * self.s_detect
+
+        print(f"s_range.shape={s_range.shape}") 
+
         if self.flat:
             p_detect_x = s_range
             p_detect_y = -self._d_detect()
@@ -400,13 +403,13 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         r_dir_x = p_detect_x * cs - p_detect_y * sn - r_p_source_x
         r_dir_y = p_detect_x * sn + p_detect_y * cs - r_p_source_y
 
-
-        ## debug
+        print(f"cs.shape={cs.shape}")
+        print(f"sn.shape={sn.shape}")
         print(f"r_p_source_x.shape={r_p_source_x.shape}")
         print(f"r_p_source_y.shape={r_p_source_y.shape}")
         print(f"r_dir_x.shape={r_dir_x.shape}")
         print(f"r_dir_y.shape={r_dir_y.shape}")
-        
+
 
         # find intersections of rays with circle for clipping
         if self.flat:
@@ -436,11 +439,27 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         lambda_1 = (-b - discriminant_sqrt) / a
         lambda_2 = (-b + discriminant_sqrt) / a
 
+
+        print(f"a.shape={a.shape}")
+        print(f"b.shape={b.shape}")
+        print(f"c.shape={c.shape}")
+        print(f"lambda_1.shape={lambda_1.shape}")
+        print(f"lambda_2.shape={lambda_2.shape}")
+
         # clip ray accordingly
         r_p_source_x = r_p_source_x + lambda_1 * r_dir_x
         r_p_source_y = r_p_source_y + lambda_1 * r_dir_y
         r_dir_x = r_dir_x * (lambda_2 - lambda_1)
         r_dir_y = r_dir_y * (lambda_2 - lambda_1)
+
+
+        print(f"r_p_source_x.shape={r_p_source_x.shape}")
+        print(f"r_p_source_y.shape={r_p_source_y.shape}")
+        print(f"r_dir_x.shape={r_dir_x.shape}")
+        print(f"r_dir_y.shape={r_dir_y.shape}")
+
+
+        print(f"x.shape={x.shape}")
 
         # use batch and channel dimensions for vectorized interpolation
         original_dim = x.ndim
@@ -449,12 +468,20 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         assert x.shape[-3] == 1  # we can handle only single channel data
         x = x.transpose(-4, -3)  # switch batch and channel dim
 
+        print(f"x.shape={x.shape}")
+        print(f"x.ndim={x.ndim}")
+
         # integrate over ray
         num_steps = torch.ceil(
             torch.sqrt(r_dir_x * r_dir_x + r_dir_y * r_dir_y)
         ).max()
+
+        print(f"num_steps.shape={num_steps.shape}")
+        print(f"num_steps={num_steps}")
+
         diff_x = r_dir_x / num_steps
         diff_y = r_dir_y / num_steps
+
         steps = (
             torch.arange(
                 int(num_steps.detach().cpu().numpy()), device=x.device
@@ -462,8 +489,14 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
             .unsqueeze(1)
             .unsqueeze(1)
         )
+
+        print(f"steps.shape={steps.shape}")
+
         grid_x = r_p_source_x.unsqueeze(0) + steps * diff_x.unsqueeze(0)
         grid_y = r_p_source_y.unsqueeze(0) + steps * diff_y.unsqueeze(0)
+
+        print(f"grid_x.shape={grid_x.shape}")
+        print(f"grid_y.shape={grid_y.shape}")
 
         grid_x = grid_x / (
             self.n[0] / 2.0 - 0.5
@@ -473,9 +506,8 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         )  # rescale image positions to [-1, 1]
         grid = torch.stack([grid_y, grid_x], dim=-1)
 
-
         print(grid.shape)
-        print(grid)
+        # print(grid)
         print(torch.isnan(grid).any().item())
 
 
