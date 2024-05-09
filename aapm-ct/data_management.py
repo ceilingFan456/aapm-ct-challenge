@@ -86,12 +86,12 @@ class CTDataset(torch.utils.data.Dataset):
                 os.path.join(path, "Sinogram_batch{}.npy.gz".format(batch)),
                 "r",
             )
-        )
+        )[:300,:,:]
         self.fbp = np.load(
             gzip.GzipFile(
                 os.path.join(path, "FBP128_batch{}.npy.gz".format(batch)), "r"
             )
-        )
+        )[:300,:,:]
 
 
         if not subset == "val" and not subset == "test":
@@ -100,17 +100,17 @@ class CTDataset(torch.utils.data.Dataset):
                     os.path.join(path, "Phantom_batch{}.npy.gz".format(batch)),
                     "r",
                 )
-            )
+            )[:300,:,:]
         else:
             self.phantom = 0.0 * self.fbp  # no ground truth data exists here
 
         assert self.phantom.shape[0] == self.sinogram.shape[0]
         assert self.phantom.shape[0] == self.fbp.shape[0]
 
-        # print(f"DATAPATH={DATA_PATH}")
-        # print(f"path={path}")
-        # print(f"self.phantom.shape={self.phantom.shape}")
-        # print(f"self.sinogram.shape={self.sinogram.shape}")
+        print(f"DATAPATH={DATA_PATH}")
+        print(f"path={path}")
+        print(f"self.phantom.shape={self.phantom.shape}")
+        print(f"self.sinogram.shape={self.sinogram.shape}")
 
         # split dataset for cross validation
         # fold_len = self.phantom.shape[0] // folds
@@ -129,9 +129,9 @@ class CTDataset(torch.utils.data.Dataset):
         # self.fbp = np.concatenate(f_list, axis=0)
 
         # transform numpy to torch tensor
-        self.phantom = torch.tensor(self.phantom, dtype=torch.float)[:500]
-        self.sinogram = torch.tensor(self.sinogram, dtype=torch.float)[:500]
-        self.fbp = torch.tensor(self.fbp, dtype=torch.float)[:500]
+        self.phantom = torch.tensor(self.phantom, dtype=torch.float)
+        self.sinogram = torch.tensor(self.sinogram, dtype=torch.float)
+        self.fbp = torch.tensor(self.fbp, dtype=torch.float)
 
     def __len__(self):
         return self.phantom.shape[0]
