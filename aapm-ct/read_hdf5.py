@@ -40,7 +40,7 @@ for folder in folders:
     if folder.startswith("ground_truth"):
         ## modify data to have the square -> circle-> square shape
         old_size = data.shape[-1]
-        new_size = np.ceil(old_size * np.sqrt(2))
+        new_size = int(np.ceil(old_size * np.sqrt(2)))
         new_data = np.zeros((data.shape[0], new_size, new_size))
         start_index = (old_size - new_size) // 2
         new_data[start_index: start_index + old_size, start_index: start_index + old_size] = data
