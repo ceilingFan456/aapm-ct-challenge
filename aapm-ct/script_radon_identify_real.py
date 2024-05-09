@@ -24,7 +24,7 @@ radon_params = {
     "n_detect": 513,
     "angles": torch.linspace(0, 360, 1001, requires_grad=False)[:-1],
     "d_source": torch.tensor(512.00, requires_grad=False),
-    "s_detect": torch.tensor(-1.0, requires_grad=False),
+    "s_detect": torch.tensor(0.5, requires_grad=False),
     "scale": torch.tensor(0.01, requires_grad=False),
     "flat": True,
     "mode": "fwd",
@@ -37,13 +37,13 @@ radon_net = RadonNet
 def _specify_param(radon_net, train_phase):
     if train_phase % 3 == 0:
         radon_net.OpR.angles.requires_grad = False
-        radon_net.OpR.d_source.requires_grad = False
+        radon_net.OpR.d_source.requires_grad = True
         radon_net.OpR.scale.requires_grad = True
-        radon_net.OpR.s_detect.requires_grad = False
+        radon_net.OpR.s_detect.requires_grad = True
     elif train_phase % 3 == 1:
         radon_net.OpR.angles.requires_grad = False
         radon_net.OpR.d_source.requires_grad = True
-        radon_net.OpR.scale.requires_grad = False
+        radon_net.OpR.scale.requires_grad = True
         radon_net.OpR.s_detect.requires_grad = True
 
     elif train_phase % 3 == 2:
