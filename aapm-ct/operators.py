@@ -563,12 +563,16 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         grid_x = r_p_source_x.unsqueeze(0) + steps * diff_x.unsqueeze(0)
         grid_y = r_p_source_y.unsqueeze(0) + steps * diff_y.unsqueeze(0)
 
-        grid_x = grid_x / (
-            self.n[0] / 2.0 - 0.5
-        )  # rescale image positions to [-1, 1]
-        grid_y = grid_y / (
-            self.n[1] / 2.0 - 0.5
-        )  # rescale image positions to [-1, 1]
+        # grid_x = grid_x / (
+        #     self.n[0] / 2.0 - 0.5
+        # )  # rescale image positions to [-1, 1]
+        # grid_y = grid_y / (
+        #     self.n[1] / 2.0 - 0.5
+        # )  # rescale image positions to [-1, 1]
+
+        grid_x = grid_x / self.d_source
+        grid_y = grid_y / self.d_source
+
         grid = torch.stack([grid_y, grid_x], dim=-1)
         inter = torch.nn.functional.grid_sample(
             x.expand((int(num_steps.detach().cpu().numpy()), -1, -1, -1)),
