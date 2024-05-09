@@ -64,7 +64,7 @@ def loss_func(pred, tar):
 train_phases = 3 * 10
 train_params = {
     "num_epochs": int(train_phases / 3) * [3, 2, 1],
-    "batch_size": train_phases * [10],
+    "batch_size": train_phases * [5],
     "loss_func": loss_func,
     "save_path": [
         os.path.join(
