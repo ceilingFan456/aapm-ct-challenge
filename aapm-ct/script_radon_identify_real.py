@@ -191,5 +191,5 @@ with open(
 ) as file:
     for name, param in radon_net.state_dict().items():
         file.write(f"Parameter Name: {name}, Shape: {param.shape}\n")
-        file.write(param)
+        # file.write(param)
         file.write("\n\n")
