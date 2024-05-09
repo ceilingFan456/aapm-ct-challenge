@@ -91,7 +91,7 @@ class CTDataset(torch.utils.data.Dataset):
             gzip.GzipFile(
                 os.path.join(path, "FBP128_batch{}.npy.gz".format(batch)), "r"
             )
-        )[:300,:,:]
+        )[:100,:,:]
 
 
         if not subset == "val" and not subset == "test":
