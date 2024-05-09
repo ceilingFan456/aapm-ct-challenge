@@ -9,7 +9,7 @@ import gzip
 
 folders = ["ground_truth_validation", "ground_truth_test", "observation_validation", "observation_test"]
 raw_folder = "./real_data_hdf5"
-output_folder = "./real_data_gz"
+output_folder = "./real_data_modified"
 
 for folder in folders:
     data_list = []
