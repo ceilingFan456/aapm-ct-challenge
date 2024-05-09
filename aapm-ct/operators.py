@@ -507,6 +507,13 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         r_dir_x = p_detect_x * cs - p_detect_y * sn - r_p_source_x
         r_dir_y = p_detect_x * sn + p_detect_y * cs - r_p_source_y
 
+
+        ## debug
+        print(f"r_p_source_x.shape={r_p_source_x.shape}")
+        print(f"r_p_source_y.shape={r_p_source_y.shape}")
+        print(f"r_dir_x.shape={r_dir_x.shape}")
+        print(f"r_dir_y.shape={r_dir_y.shape}")
+
         # find intersections of rays with circle for clipping
         radius = self.d_source
 
