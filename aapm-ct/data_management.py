@@ -129,9 +129,9 @@ class CTDataset(torch.utils.data.Dataset):
         # self.fbp = np.concatenate(f_list, axis=0)
 
         # transform numpy to torch tensor
-        self.phantom = torch.tensor(self.phantom, dtype=torch.float)
-        self.sinogram = torch.tensor(self.sinogram, dtype=torch.float)
-        self.fbp = torch.tensor(self.fbp, dtype=torch.float)
+        self.phantom = torch.tensor(self.phantom, dtype=torch.float)[:500]
+        self.sinogram = torch.tensor(self.sinogram, dtype=torch.float)[:500]
+        self.fbp = torch.tensor(self.fbp, dtype=torch.float)[:500]
 
     def __len__(self):
         return self.phantom.shape[0]
