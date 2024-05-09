@@ -578,6 +578,7 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
             x.expand((int(num_steps.detach().cpu().numpy()), -1, -1, -1)),
             grid,
             align_corners=True,
+            mode='nearest'
         )
 
         sino = inter.sum(dim=0, keepdim=True) * torch.sqrt(
