@@ -42,7 +42,7 @@ for folder in folders:
         old_size = data.shape[-1]
         new_size = int(np.ceil(old_size * np.sqrt(2)))
         new_data = np.zeros((data.shape[0], new_size, new_size))
-        start_index = (old_size - new_size) // 2
+        start_index = (new_size - old_size) // 2
         new_data[:, start_index: start_index + old_size, start_index: start_index + old_size] = data
 
         print(f"old_size={old_size}, new_size={new_size}, start_index={start_index}")
