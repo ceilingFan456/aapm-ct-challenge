@@ -604,6 +604,7 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         # print(f"x.shape={x.shape}")
 
         # use batch and channel dimensions for vectorized interpolation
+        x = x.transpose()
         original_dim = x.ndim
         while x.ndim < 4:
             x = x.unsqueeze(0)
