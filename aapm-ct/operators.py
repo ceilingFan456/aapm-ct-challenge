@@ -650,7 +650,7 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         # grid_x = grid_x / 256 ## image size is 256x256
         # grid_y = grid_y / 256
 
-        grid = torch.stack([grid_x, grid_y], dim=-1) ## TODO check why reversed order of grid_x and grid_y
+        grid = torch.stack([grid_y, grid_x], dim=-1) ## TODO check why reversed order of grid_x and grid_y
         # print(grid.shape)
         # print(grid)
         # print(torch.isnan(grid).any().item())
