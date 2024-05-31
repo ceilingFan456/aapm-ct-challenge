@@ -541,11 +541,11 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         # print(f"s_range.shape={s_range.shape}") 
 
         p_detect_x = s_range
-        p_detect_y = -self._d_detect()
+        p_detect_y = -100
 
         # source position
         p_source_x = s_range
-        p_source_y = self.d_source
+        p_source_y = 100
 
         # rotate rays from source to detector over all angles
         pi = torch.acos(torch.zeros(1)).item() * 2.0
@@ -564,7 +564,7 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         # print(f"r_dir_y.shape={r_dir_y.shape}")
 
         # find intersections of rays with circle for clipping
-        radius = self.d_source
+        radius = 300 ## make this large to ensure always intersects, 256 should be exact 
 
         a = r_dir_x * r_dir_x + r_dir_y * r_dir_y
         b = r_p_source_x * r_dir_x + r_p_source_y * r_dir_y
@@ -604,7 +604,6 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         # print(f"x.shape={x.shape}")
 
         # use batch and channel dimensions for vectorized interpolation
-        x = x.transpose()
         original_dim = x.ndim
         while x.ndim < 4:
             x = x.unsqueeze(0)
@@ -618,7 +617,7 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         # integrate over ray
         num_steps = torch.ceil(
             torch.sqrt(r_dir_x * r_dir_x + r_dir_y * r_dir_y)
-        ).max() / 2
+        ).max()
 
         # print(f"num_steps.shape={num_steps.shape}")
         # print(f"num_steps={num_steps}")
@@ -641,17 +640,17 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
         # print(f"grid_x.shape={grid_x.shape}")
         # print(f"grid_y.shape={grid_y.shape}")
 
-        # grid_x = grid_x / (
-        #     self.n[0] / 2.0 - 0.5
-        # )  # rescale image positions to [-1, 1]
-        # grid_y = grid_y / (
-        #     self.n[1] / 2.0 - 0.5
-        # )  # rescale image positions to [-1, 1]
+        grid_x = grid_x / (
+            self.n[0] / 2.0 - 0.5
+        )  # rescale image positions to [-1, 1]
+        grid_y = grid_y / (
+            self.n[1] / 2.0 - 0.5
+        )  # rescale image positions to [-1, 1]
 
-        grid_x = grid_x / self.d_source
-        grid_y = grid_y / self.d_source
+        # grid_x = grid_x / 256 ## image size is 256x256
+        # grid_y = grid_y / 256
 
-        grid = torch.stack([grid_y, grid_x], dim=-1)
+        grid = torch.stack([grid_x, grid_y], dim=-1) ## TODO check why reversed order of grid_x and grid_y
         # print(grid.shape)
         # print(grid)
         # print(torch.isnan(grid).any().item())
