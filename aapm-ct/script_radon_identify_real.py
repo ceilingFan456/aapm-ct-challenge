@@ -43,8 +43,8 @@ def _specify_param(radon_net, train_phase):
     elif train_phase % 3 == 1:
         radon_net.OpR.angles.requires_grad = False
         radon_net.OpR.d_source.requires_grad = False
-        radon_net.OpR.scale.requires_grad = False
-        radon_net.OpR.s_detect.requires_grad = True
+        radon_net.OpR.scale.requires_grad = True
+        radon_net.OpR.s_detect.requires_grad = False
 
     elif train_phase % 3 == 2:
         radon_net.OpR.angles.requires_grad = False
