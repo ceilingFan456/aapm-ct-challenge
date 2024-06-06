@@ -43,14 +43,14 @@ def _specify_param(radon_net, train_phase):
     elif train_phase % 3 == 1:
         radon_net.OpR.angles.requires_grad = False
         radon_net.OpR.d_source.requires_grad = False
-        radon_net.OpR.scale.requires_grad = True
-        radon_net.OpR.s_detect.requires_grad = False
-
-    elif train_phase % 3 == 2:
-        radon_net.OpR.angles.requires_grad = False
-        radon_net.OpR.d_source.requires_grad = False
         radon_net.OpR.scale.requires_grad = False
         radon_net.OpR.s_detect.requires_grad = True
+
+    elif train_phase % 3 == 2:
+        radon_net.OpR.angles.requires_grad = True
+        radon_net.OpR.d_source.requires_grad = False
+        radon_net.OpR.scale.requires_grad = False
+        radon_net.OpR.s_detect.requires_grad = False
 
 
 # ----- training configuration -----
@@ -61,7 +61,7 @@ def loss_func(pred, tar):
     return mseloss(pred, tar) / pred.shape[0]
 
 
-train_phases = 3 * 10
+train_phases = 3 * 20
 train_params = {
     "num_epochs": int(train_phases / 3) * [3, 2, 1],
     "batch_size": train_phases * [5],
