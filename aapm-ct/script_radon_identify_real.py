@@ -18,7 +18,7 @@ mpl.use("agg")
 device = torch.device("cuda:0")
 torch.cuda.set_device(0)
 
-rand_angles = 180 * torch.rand(1001)
+rand_angles = 180 * torch.rand(1000)
 rand_angles, _ = torch.sort(rand_angles)
 rand_angles.requires_grad = False
 
