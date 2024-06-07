@@ -69,7 +69,7 @@ class CTDataset(torch.utils.data.Dataset):
         if subset == "train":
             path = os.path.join(DATA_PATH, "training_data")
             ## short cut 
-            if not leave_out: ## val set for forward training. 
+            if real_data and not leave_out: ## val set for forward training. 
                 path = os.path.join(DATA_PATH, "validation_data")
         elif subset == "val":
             path = os.path.join(DATA_PATH, "validation_data")
