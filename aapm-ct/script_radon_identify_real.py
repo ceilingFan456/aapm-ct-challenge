@@ -18,11 +18,16 @@ mpl.use("agg")
 device = torch.device("cuda:0")
 torch.cuda.set_device(0)
 
+rand_angles = 180 * torch.rand(1001)
+rand_angles, _ = torch.sort(rand_angles)
+rand_angles.requires_grad = False
+
 # ----- network configuration -----
 radon_params = {
     "n": [512, 512],
     "n_detect": 513,
-    "angles": torch.linspace(0, 180, 1001, requires_grad=False)[:-1],
+    # "angles": torch.linspace(0, 180, 1001, requires_grad=False)[:-1],
+    "angles": rand_angles,
     "d_source": torch.tensor(512.00, requires_grad=False),
     "s_detect": torch.tensor(2.0, requires_grad=False),
     "scale": torch.tensor(0.01, requires_grad=False),
