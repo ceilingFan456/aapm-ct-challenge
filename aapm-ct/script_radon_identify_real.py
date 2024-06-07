@@ -68,8 +68,8 @@ def loss_func(pred, tar):
 
 train_phases = 3 * 10
 train_params = {
-    "num_epochs": int(train_phases / 3) * [5, 5, 5],
-    "batch_size": train_phases * [3], ## default 5 
+    "num_epochs": int(train_phases / 3) * [5, 3, 10],
+    "batch_size": train_phases * [5], ## default 5 
     "loss_func": loss_func,
     "save_path": [
         os.path.join(
@@ -87,7 +87,7 @@ train_params = {
     * [
         {"lr": 1e-4, "eps": 1e-5},
         {"lr": 1e-2, "eps": 1e-5}, ## default 1e-0
-        {"lr": 1e-4, "eps": 1e-5}, ## default 1e-1
+        {"lr": 1e-3, "eps": 1e-5}, ## default 1e-1
     ],
     "scheduler": torch.optim.lr_scheduler.StepLR,
     "scheduler_params": {"step_size": 50, "gamma": 0.75},
