@@ -167,7 +167,7 @@ class InvNet(torch.nn.Module, metaclass=ABCMeta):
     def _create_figure(
         self, logging, loss, inp, tar, pred, v_loss, v_inp, v_tar, v_pred
     ):
-        def _implot(sub, im):
+        def _implot(sub, im, vmin=None, vmax=None):
             if im.shape[-3] == 2:  # complex image
                 p = sub.imshow(
                     torch.sqrt(im.pow(2).sum(-3))[0, :, :].detach().cpu()
@@ -204,7 +204,9 @@ class InvNet(torch.nn.Module, metaclass=ABCMeta):
         plt.colorbar(p11, ax=subs[1, 1])
 
         # validation difference
-        p12 = _implot(subs[1, 2], v_pred - v_tar)
+        dif = v_pred - v_tar
+        dif_max = torch.max(torch.abs(dif)).item()
+        p12 = _implot(subs[1, 2], v_pred - v_tar, -dif_max, dif_max)
         subs[1, 2].set_title(
             "val diff: x0 - x_pred \n val_chall="
             "{:1.2e}".format(logging["val_chall_err"].iloc[-1])
@@ -581,17 +583,17 @@ class RadonNet(InvNet):
     def _create_figure(
         self, logging, loss, inp, tar, pred, v_loss, v_inp, v_tar, v_pred
     ):
-        def _implot(sub, im):
+        def _implot(sub, im, vmin=None, vmax=None):
             if im.shape[-3] == 2:  # complex image
                 p = sub.imshow(
-                    torch.sqrt(im.pow(2).sum(-3))[0, :, :].detach().cpu()
+                    torch.sqrt(im.pow(2).sum(-3))[0, :, :].detach().cpu(), vmin=vmin, vmax=vmax
                 )
             else:  # real image
-                p = sub.imshow(im[0, 0, :, :].detach().cpu())
+                p = sub.imshow(im[0, 0, :, :].detach().cpu(), vmin=vmin, vmax=vmax)
             return p
 
         if self.mode == "fwd" or self.mode == "bwd":
-            fig, subs = plt.subplots(2, 3, clear=True, num=1, figsize=(20, 15))
+            fig, subs = plt.subplots(2, 4, clear=True, num=1, figsize=(20, 15))
             v_inp1, v_tar1, v_pred1 = v_inp, v_tar, v_pred
         elif self.mode == "both":
             fig, subs = plt.subplots(2, 5, clear=True, num=1, figsize=(20, 15))
@@ -633,6 +635,15 @@ class RadonNet(InvNet):
         p02 = _implot(subs[0, 2], v_pred1 - v_tar1)
         subs[0, 2].set_title("val diff")
         plt.colorbar(p02, ax=subs[0, 2])
+
+        if self.mode == "fwd" or self.mode == "bwd":
+            tar_max = torch.max(torch.abs(v_tar1)).item()
+            p13 = _implot(subs[1, 3], v_pred1, -tar_max, tar_max)
+            subs[1, 3].set_title("val pred rescaled")
+
+            dif_max = torch.max(torch.abs(v_pred1 - v_tar1)).item()
+            p03 = _implot(subs[0, 3], v_pred1 - v_tar1, -dif_max, dif_max)
+            subs[0, 3].set_title("val diff sym scaled")
 
         if self.mode == "both" or self.mode == "chain":
             # validation input
