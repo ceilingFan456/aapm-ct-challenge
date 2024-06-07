@@ -638,7 +638,8 @@ class RadonNet(InvNet):
 
         if self.mode == "fwd" or self.mode == "bwd":
             tar_max = torch.max(torch.abs(v_tar1)).item()
-            p13 = _implot(subs[1, 3], v_pred1, -tar_max, tar_max)
+            tar_min = torch.min(torch.abs(v_tar1)).item()
+            p13 = _implot(subs[1, 3], v_pred1, tar_min, tar_max)
             subs[1, 3].set_title("val pred rescaled")
 
             dif_max = torch.max(torch.abs(v_pred1 - v_tar1)).item()
