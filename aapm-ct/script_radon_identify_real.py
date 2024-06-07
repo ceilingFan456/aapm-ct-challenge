@@ -66,9 +66,9 @@ def loss_func(pred, tar):
     return mseloss(pred, tar) / pred.shape[0]
 
 
-train_phases = 3 * 3
+train_phases = 3 * 10
 train_params = {
-    "num_epochs": int(train_phases / 3) * [10, 5, 5],
+    "num_epochs": int(train_phases / 3) * [5, 5, 5],
     "batch_size": train_phases * [3], ## default 5 
     "loss_func": loss_func,
     "save_path": [
