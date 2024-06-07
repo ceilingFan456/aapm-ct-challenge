@@ -619,6 +619,8 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
             torch.sqrt(r_dir_x * r_dir_x + r_dir_y * r_dir_y)
         ).max()
 
+        num_steps = num_steps // 2 ## reduce number of steps to save memory
+
         # print(f"num_steps.shape={num_steps.shape}")
         # print(f"num_steps={num_steps}")
 
