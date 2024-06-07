@@ -22,9 +22,9 @@ torch.cuda.set_device(0)
 radon_params = {
     "n": [512, 512],
     "n_detect": 513,
-    "angles": torch.linspace(0, 180, 1001, requires_grad=False)[:-1],
+    "angles": torch.linspace(0, 360, 1001, requires_grad=False)[:-1],
     "d_source": torch.tensor(512.00, requires_grad=False),
-    "s_detect": torch.tensor(1.0, requires_grad=False),
+    "s_detect": torch.tensor(0.5, requires_grad=False),
     "scale": torch.tensor(0.01, requires_grad=False),
     "flat": True,
     "mode": "fwd",
@@ -81,8 +81,8 @@ train_params = {
     "optimizer_params": int(train_phases / 3)
     * [
         {"lr": 1e-4, "eps": 1e-5},
-        {"lr": 1e-3, "eps": 1e-5}, ## default 1e-0
-        {"lr": 1e-3, "eps": 1e-5}, ## default 1e-1
+        {"lr": 1e-1, "eps": 1e-5}, ## default 1e-0
+        {"lr": 1e-2, "eps": 1e-5}, ## default 1e-1
     ],
     "scheduler": torch.optim.lr_scheduler.StepLR,
     "scheduler_params": {"step_size": 50, "gamma": 0.75},
