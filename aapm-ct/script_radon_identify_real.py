@@ -22,7 +22,7 @@ torch.cuda.set_device(0)
 radon_params = {
     "n": [512, 512],
     "n_detect": 513,
-    "angles": torch.linspace(0, 360, 1001, requires_grad=False)[:-1],
+    "angles": torch.linspace(0, 180, 1001, requires_grad=False)[:-1],
     "d_source": torch.tensor(512.00, requires_grad=False),
     "s_detect": torch.tensor(0.5, requires_grad=False),
     "scale": torch.tensor(0.01, requires_grad=False),
