@@ -63,6 +63,7 @@ class CTDataset(torch.utils.data.Dataset):
         leave_out=True,
         transform=None,
         device=None,
+        real_data=False,
     ):
         # choose directory according to subset
         if subset == "train":
@@ -86,12 +87,12 @@ class CTDataset(torch.utils.data.Dataset):
                 os.path.join(path, "Sinogram_batch{}.npy.gz".format(batch)),
                 "r",
             )
-        )[:100,:,:]
+        )
         self.fbp = np.load(
             gzip.GzipFile(
                 os.path.join(path, "FBP128_batch{}.npy.gz".format(batch)), "r"
             )
-        )[:100,:,:]
+        )
 
 
         if not subset == "val" and not subset == "test":
@@ -100,7 +101,7 @@ class CTDataset(torch.utils.data.Dataset):
                     os.path.join(path, "Phantom_batch{}.npy.gz".format(batch)),
                     "r",
                 )
-            )[:100,:,:]
+            )
         else:
             self.phantom = 0.0 * self.fbp  # no ground truth data exists here
 
@@ -113,20 +114,21 @@ class CTDataset(torch.utils.data.Dataset):
         print(f"self.sinogram.shape={self.sinogram.shape}")
 
         # split dataset for cross validation
-        # fold_len = self.phantom.shape[0] // folds
-        # if not isinstance(num_fold, list):
-        #     num_fold = [num_fold]
-        # p_list, s_list, f_list = [], [], []
-        # for cur_fold in range(folds):
-        #     il = cur_fold * fold_len
-        #     ir = il + fold_len
-        #     if leave_out ^ (cur_fold in num_fold):
-        #         p_list.append(self.phantom[il:ir])
-        #         s_list.append(self.sinogram[il:ir])
-        #         f_list.append(self.fbp[il:ir])
-        # self.phantom = np.concatenate(p_list, axis=0)
-        # self.sinogram = np.concatenate(s_list, axis=0)
-        # self.fbp = np.concatenate(f_list, axis=0)
+        if not real_data:
+            fold_len = self.phantom.shape[0] // folds
+            if not isinstance(num_fold, list):
+                num_fold = [num_fold]
+            p_list, s_list, f_list = [], [], []
+            for cur_fold in range(folds):
+                il = cur_fold * fold_len
+                ir = il + fold_len
+                if leave_out ^ (cur_fold in num_fold):
+                    p_list.append(self.phantom[il:ir])
+                    s_list.append(self.sinogram[il:ir])
+                    f_list.append(self.fbp[il:ir])
+            self.phantom = np.concatenate(p_list, axis=0)
+            self.sinogram = np.concatenate(s_list, axis=0)
+            self.fbp = np.concatenate(f_list, axis=0)
 
         # transform numpy to torch tensor
         self.phantom = torch.tensor(self.phantom, dtype=torch.float)
