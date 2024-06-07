@@ -47,10 +47,10 @@ def _specify_param(radon_net, train_phase):
         radon_net.OpR.s_detect.requires_grad = True
 
     elif train_phase % 3 == 2:
-        radon_net.OpR.angles.requires_grad = False
+        radon_net.OpR.angles.requires_grad = True
         radon_net.OpR.d_source.requires_grad = False
         radon_net.OpR.scale.requires_grad = False
-        radon_net.OpR.s_detect.requires_grad = True
+        radon_net.OpR.s_detect.requires_grad = False
 
 
 # ----- training configuration -----
@@ -61,9 +61,9 @@ def loss_func(pred, tar):
     return mseloss(pred, tar) / pred.shape[0]
 
 
-train_phases = 3 * 20
+train_phases = 3 * 3
 train_params = {
-    "num_epochs": int(train_phases / 3) * [10, 2, 1],
+    "num_epochs": int(train_phases / 3) * [10, 5, 3],
     "batch_size": train_phases * [3], ## default 5 
     "loss_func": loss_func,
     "save_path": [
@@ -81,8 +81,8 @@ train_params = {
     "optimizer_params": int(train_phases / 3)
     * [
         {"lr": 1e-4, "eps": 1e-5},
-        {"lr": 1e-0, "eps": 1e-5},
-        {"lr": 1e-1, "eps": 1e-5},
+        {"lr": 1e-3, "eps": 1e-5}, ## default 1e-0
+        {"lr": 1e-3, "eps": 1e-5}, ## default 1e-1
     ],
     "scheduler": torch.optim.lr_scheduler.StepLR,
     "scheduler_params": {"step_size": 50, "gamma": 0.75},
