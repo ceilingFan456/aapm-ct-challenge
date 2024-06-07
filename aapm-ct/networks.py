@@ -641,10 +641,12 @@ class RadonNet(InvNet):
             tar_min = torch.min(torch.abs(v_tar1)).item()
             p13 = _implot(subs[1, 3], v_pred1, tar_min, tar_max)
             subs[1, 3].set_title("val pred rescaled")
+            plt.colorbar(p13, ax=subs[1, 3])
 
             dif_max = torch.max(torch.abs(v_pred1 - v_tar1)).item()
             p03 = _implot(subs[0, 3], v_pred1 - v_tar1, -dif_max, dif_max)
             subs[0, 3].set_title("val diff sym scaled")
+            plt.colorbar(p03, ax=subs[0, 3])
 
         if self.mode == "both" or self.mode == "chain":
             # validation input
