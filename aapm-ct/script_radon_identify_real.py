@@ -68,7 +68,7 @@ def loss_func(pred, tar):
 
 train_phases = 3 * 20
 train_params = {
-    "num_epochs": int(train_phases / 3) * [5, 3, 10],
+    "num_epochs": int(train_phases / 3) * [5, 3, 2],
     "batch_size": train_phases * [5], ## default 5 
     "loss_func": loss_func,
     "save_path": [
