@@ -616,10 +616,10 @@ class FanbeamRadon(torch.nn.Module, LinearOperator):
 
         # integrate over ray
         num_steps = torch.ceil(
-            torch.sqrt(r_dir_x * r_dir_x + r_dir_y * r_dir_y)
+            torch.sqrt(r_dir_x * r_dir_x + r_dir_y * r_dir_y) / 2
         ).max()
 
-        num_steps = num_steps // 2 ## reduce number of steps to save memory
+        # num_steps = num_steps // 2 ## reduce number of steps to save memory, moved to above line
 
         # print(f"num_steps.shape={num_steps.shape}")
         # print(f"num_steps={num_steps}")
