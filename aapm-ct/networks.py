@@ -120,8 +120,25 @@ class InvNet(torch.nn.Module, metaclass=ABCMeta):
 
         self._print_info()
 
-        logging = logging.append(
-            {
+        # logging = logging.append(
+        #     {
+        #         "loss": loss.item(),
+        #         "val_loss": v_loss.item(),
+        #         "rel_l2_error": l2_error(
+        #             pred, tar, relative=True, squared=False
+        #         )[0].item(),
+        #         "val_rel_l2_error": rel_err_val,
+        #         "chall_err": l2_error(
+        #             pred, tar, relative=False, squared=False
+        #         )[0].item()
+        #         / np.sqrt(pred.shape[-1] * pred.shape[-2]),
+        #         "val_chall_err": chall_err_val,
+        #     },
+        #     ignore_index=True,
+        #     sort=False,
+        # )
+
+        log = {
                 "loss": loss.item(),
                 "val_loss": v_loss.item(),
                 "rel_l2_error": l2_error(
@@ -133,10 +150,9 @@ class InvNet(torch.nn.Module, metaclass=ABCMeta):
                 )[0].item()
                 / np.sqrt(pred.shape[-1] * pred.shape[-2]),
                 "val_chall_err": chall_err_val,
-            },
-            ignore_index=True,
-            sort=False,
-        )
+            }
+
+        logging = pd.concat([logging, pd.DataFrame([log])], ignore_index=True)
 
         print(logging.tail(1))
 
