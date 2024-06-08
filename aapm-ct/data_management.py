@@ -112,6 +112,15 @@ class CTDataset(torch.utils.data.Dataset):
         print(f"self.phantom.shape={self.phantom.shape}")
         print(f"self.sinogram.shape={self.sinogram.shape}")
 
+        if not leave_out:
+            self.phantom = self.phantom[:350]
+            self.sinogram = self.sinogram[:350]
+            self.fbp = self.fbp[:350]
+        else:
+            self.phantom = self.phantom[:150]
+            self.sinogram = self.sinogram[:150]
+            self.fbp = self.fbp[:150]
+
         # split dataset for cross validation
         # fold_len = self.phantom.shape[0] // folds
         # if not isinstance(num_fold, list):
