@@ -6,6 +6,9 @@
 #PBS -l walltime=01:00:00
 #PBS -N forward 
 
+# Unload any currently loaded Python modules
+module unload python
+
 # Load available modules
 module load python/3.8.13
 module load cuda/11.6.2
