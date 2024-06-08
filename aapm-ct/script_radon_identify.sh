@@ -4,7 +4,6 @@
 #PBS -j oe
 #PBS -l select=1:ngpus=1
 #PBS -l walltime=01:00:00
-#PBS -P 90000001
 #PBS -N forward 
 
 # Load necessary modules
