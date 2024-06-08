@@ -126,6 +126,7 @@ for i in range(train_phases):
         print(key + ": " + str(value))
 
     log = radon_net.train_on(train_data, val_data, **train_params_cur)
-    logging = logging.append(log, ignore_index=True)
+    # logging = logging.append(log, ignore_index=True)
+    logging = pd.concat([logging, log], ignore_index=True)    
 
 logging.to_csv('backward_log.csv', index=False)
