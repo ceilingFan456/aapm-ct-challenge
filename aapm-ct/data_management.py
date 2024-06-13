@@ -107,6 +107,15 @@ class CTDataset(torch.utils.data.Dataset):
         assert self.phantom.shape[0] == self.sinogram.shape[0]
         assert self.phantom.shape[0] == self.fbp.shape[0]
 
+        ## using only 1/4 for faster training
+        if subset == "train":
+            num = 700
+        if subset == "val":
+            num = 200
+        self.phantom = self.phantom[:num]
+        self.sinogram = self.sinogram[:num]
+        self.fbp = self.fbp[:num]
+
         print(f"DATAPATH={DATA_PATH}")
         print(f"path={path}")
         print(f"self.phantom.shape={self.phantom.shape}")
