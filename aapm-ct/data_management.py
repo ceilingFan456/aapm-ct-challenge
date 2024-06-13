@@ -109,9 +109,9 @@ class CTDataset(torch.utils.data.Dataset):
 
         ## using only 1/4 for faster training
         if subset == "train":
-            num = 700 / 4
+            num = 700 // 4
         if subset == "val":
-            num = 200 / 4
+            num = 200 // 4
         self.phantom = self.phantom[:num]
         self.sinogram = self.sinogram[:num]
         self.fbp = self.fbp[:num]
