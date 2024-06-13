@@ -108,9 +108,9 @@ class CTDataset(torch.utils.data.Dataset):
         assert self.phantom.shape[0] == self.fbp.shape[0]
 
         ## using only 1/4 for faster training
-        if subset == "train":
+        if leave_out:
             num = 700 // 4
-        if subset == "val":
+        if not leave_out:
             num = 200 // 4
         self.phantom = self.phantom[:num]
         self.sinogram = self.sinogram[:num]
