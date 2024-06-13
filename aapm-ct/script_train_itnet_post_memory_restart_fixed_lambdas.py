@@ -36,7 +36,7 @@ d = torch.load(
     os.path.join(
         config.RESULTS_PATH,
         "operator_radon_bwd_train_phase_1",
-        "model_weights_epoch.pt",
+        "model_weights.pt",
     ),
     map_location=device,
 )
