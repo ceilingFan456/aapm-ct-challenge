@@ -142,7 +142,20 @@ with torch.no_grad():
         print("itnet_result shape:", itnet_result.shape)
 
         # Visualize and save combined image
-        fig, axes = plt.subplots(2, 5, figsize=(15, 60))
+        fig, axes = plt.subplots(2, 5, figsize=(60, 15))
+        v_min = -10000000000
+        v_max = 10000000000
+
+        diff = f_result - sinogram[0, 0].detach().cpu()
+        v_min = max(v_min, diff.min().item())
+        v_max = min(v_max, diff.max().item())
+        diff = unet_result - phantom[0, 0].detach().cpu()
+        v_min = max(v_min, diff.min().item())
+        v_max = min(v_max, diff.max().item())
+        diff = itnet_result - phantom[0, 0].detach().cpu()
+        v_min = max(v_min, diff.min().item())
+        v_max = min(v_max, diff.max().item())
+
 
         ## first column is sinogram and ground truth 
         ax = axes[0, 0]
@@ -170,11 +183,12 @@ with torch.no_grad():
         ax.set_title("diff")
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
+        
 
 
         ## third column is  FBP(sino) and diff 
         ax = axes[0, 2]
-        im = ax.imshow(fbp_result, cmap='viridis')
+        im = ax.imshow(fbp_result, cmap='viridis', vmin=v_min, vmax=v_max)
         ax.set_title("FBP(sino)")
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
@@ -188,7 +202,7 @@ with torch.no_grad():
 
         ## fourth column is UNet(FBP(sino)) and diff
         ax = axes[0, 3]
-        im = ax.imshow(unet_result, cmap='viridis')
+        im = ax.imshow(unet_result, cmap='viridis', vmin=v_min, vmax=v_max)
         ax.set_title("UNet(FBP(sino))")
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
@@ -202,7 +216,7 @@ with torch.no_grad():
 
         ## fifth column is ItNet((FBP(sino))) and diff
         ax = axes[0, 4]
-        im = ax.imshow(itnet_result, cmap='viridis')
+        im = ax.imshow(itnet_result, cmap='viridis', vmin=v_min, vmax=v_max)
         ax.set_title("ItNet(FBP(sino))")
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
