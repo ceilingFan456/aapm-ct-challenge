@@ -165,6 +165,8 @@ with torch.no_grad():
         v_min = -vv
         v_max = vv
 
+        sino_cpu  = sinogram.detach().cpu()
+
         ## first column is sinogram and ground truth 
         ax = axes[0, 0]
         im = ax.imshow(sinogram[0, 0].detach().cpu(), cmap='viridis')
@@ -185,13 +187,10 @@ with torch.no_grad():
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
 
-        print(f_result.device)
-        print(sinogram.device)
-
         diff = f_result - sinogram[0, 0].detach().cpu()
         ax = axes[1, 1]
         im = ax.imshow(diff, cmap='viridis')
-        loss = loss_func(f_result.unsqueeze(0).unsqueeze(0), sinogram)
+        loss = loss_func(f_result.unsqueeze(0).unsqueeze(0), sino_cpu)
         ax.set_title("diff, loss = {:.2f}".format(loss.item()))
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
@@ -208,7 +207,7 @@ with torch.no_grad():
         diff = fbp_result - phantom[0, 0].detach().cpu()
         ax = axes[1, 2]
         im = ax.imshow(diff, cmap='viridis', vmin=v_min, vmax=v_max)
-        loss = loss_func(f_result.unsqueeze(0).unsqueeze(0), sinogram)
+        loss = loss_func(f_result.unsqueeze(0).unsqueeze(0), sino_cpu)
         ax.set_title("diff, loss = {:.2f}".format(loss.item()))
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
@@ -223,7 +222,7 @@ with torch.no_grad():
         diff = unet_result - phantom[0, 0].detach().cpu()
         ax = axes[1, 3]
         im = ax.imshow(diff, cmap='viridis', vmin=v_min, vmax=v_max)
-        loss = loss_func(f_result.unsqueeze(0).unsqueeze(0), sinogram)
+        loss = loss_func(f_result.unsqueeze(0).unsqueeze(0), sino_cpu)
         ax.set_title("diff, loss = {:.2f}".format(loss.item()))
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
@@ -238,7 +237,7 @@ with torch.no_grad():
         diff = itnet_result - phantom[0, 0].detach().cpu()
         ax = axes[1, 4]
         im = ax.imshow(diff, cmap='viridis', vmin=v_min, vmax=v_max)
-        loss = loss_func(f_result.unsqueeze(0).unsqueeze(0), sinogram)
+        loss = loss_func(f_result.unsqueeze(0).unsqueeze(0), sino_cpu)
         ax.set_title("diff, loss = {:.2f}".format(loss.item()))
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
