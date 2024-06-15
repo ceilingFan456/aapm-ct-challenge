@@ -188,42 +188,42 @@ with torch.no_grad():
 
         ## third column is  FBP(sino) and diff 
         ax = axes[0, 2]
-        im = ax.imshow(fbp_result, cmap='viridis', vmin=v_min, vmax=v_max)
+        im = ax.imshow(fbp_result, cmap='viridis')
         ax.set_title("FBP(sino)")
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
 
         diff = fbp_result - phantom[0, 0].detach().cpu()
         ax = axes[1, 2]
-        im = ax.imshow(diff, cmap='viridis')
+        im = ax.imshow(diff, cmap='viridis', vmin=v_min, vmax=v_max)
         ax.set_title("diff")
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
 
         ## fourth column is UNet(FBP(sino)) and diff
         ax = axes[0, 3]
-        im = ax.imshow(unet_result, cmap='viridis', vmin=v_min, vmax=v_max)
+        im = ax.imshow(unet_result, cmap='viridis')
         ax.set_title("UNet(FBP(sino))")
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
     
         diff = unet_result - phantom[0, 0].detach().cpu()
         ax = axes[1, 3]
-        im = ax.imshow(diff, cmap='viridis')
+        im = ax.imshow(diff, cmap='viridis', vmin=v_min, vmax=v_max)
         ax.set_title("diff")
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
 
         ## fifth column is ItNet((FBP(sino))) and diff
         ax = axes[0, 4]
-        im = ax.imshow(itnet_result, cmap='viridis', vmin=v_min, vmax=v_max)
+        im = ax.imshow(itnet_result, cmap='viridis')
         ax.set_title("ItNet(FBP(sino))")
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
 
         diff = itnet_result - phantom[0, 0].detach().cpu()
         ax = axes[1, 4]
-        im = ax.imshow(diff, cmap='viridis')
+        im = ax.imshow(diff, cmap='viridis', vmin=v_min, vmax=v_max)
         ax.set_title("diff")
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
