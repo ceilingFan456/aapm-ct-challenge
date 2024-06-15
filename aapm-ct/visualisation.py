@@ -107,7 +107,7 @@ data_loader = torch.utils.data.DataLoader(val_data, batch_size=1, shuffle=False)
 
 
 # Create directory for saving results
-results_dir = "inference_results_fwd"
+results_dir = "pipeline_results"
 os.makedirs(results_dir, exist_ok=True)
 
 # Perform inference
@@ -142,6 +142,7 @@ with torch.no_grad():
         ## first column is sinogram and ground truth 
         
         ## second column is F(gt) and diff
+
 
         ## third column is  FBP(sino) and diff 
 
