@@ -82,6 +82,7 @@ u_net_params = {
     "inverter": operator.inv,
     "use_memory": 5,
 }
+subnet = subnet(**subnet_params).to(device)
 u_net = IterativeNet(subnet, **u_net_params).to(device)
 u_net.load_state_dict(
     torch.load(
