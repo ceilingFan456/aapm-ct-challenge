@@ -122,32 +122,86 @@ with torch.no_grad():
         ## F result 
         radon_net.mode = "fwd"
         f_result = radon_net(phantom)
+        f_result = f_result[0, 0].detach().cpu()
         print("f_result shape:", f_result.shape)
 
         ## FBP result
         radon_net.mode = "bwd"
         fbp_result = radon_net(sinogram)
+        fbp_result = fbp_result[0, 0].detach().cpu()
         print("fbp_result shape:", fbp_result.shape)
 
         ## UNet result
-        unet_result = u_net(fbp_result)
+        unet_result = u_net(sinogram)
+        unet_result = unet_result[0, 0].detach().cpu()
         print("unet_result shape:", unet_result.shape)
 
         ## ItNet result
-        itnet_result = it_net(fbp_result)
+        itnet_result = it_net(sinogram)
+        itnet_result = itnet_result[0, 0].detach().cpu()
         print("itnet_result shape:", itnet_result.shape)
 
         # Visualize and save combined image
         fig, axes = plt.subplots(2, 5, figsize=(5, 25))
 
         ## first column is sinogram and ground truth 
+        ax = axes[0, 0]
+        im = ax.imshow(sinogram[0, 0].detach().cpu(), cmap='viridis')
+        ax.set_title("sino")
+        ax.axis('off')
+        fig.colorbar(im, ax=ax, orientation='vertical')
+
+        ax = axes[1, 0]
+        im = ax.imshow(phantom[0, 0].detach().cpu(), cmap='viridis')
+        ax.set_title("gt")
+        ax.axis('off')
+        fig.colorbar(im, ax=ax, orientation='vertical')
         
         ## second column is F(gt) and diff
+        ax = axes[0, 1]
+        im = ax.imshow(f_result, cmap='viridis')
+        ax.set_title("F(gt)")
+        ax.axis('off')
+        fig.colorbar(im, ax=ax, orientation='vertical')
+
+        diff = f_result - sinogram[0, 0].detach().cpu()
+        ax = axes[1, 1]
+        im = ax.imshow(diff, cmap='viridis')
+        ax.set_title("diff")
+        ax.axis('off')
+        fig.colorbar(im, ax=ax, orientation='vertical')
 
 
         ## third column is  FBP(sino) and diff 
+        ax = axes[0, 2]
+        im = ax.imshow(fbp_result, cmap='viridis')
+        ax.set_title("FBP(sino)")
+        ax.axis('off')
+        fig.colorbar(im, ax=ax, orientation='vertical')
+
+        diff = fbp_result - phantom[0, 0].detach().cpu()
+        ax = axes[1, 2]
+        im = ax.imshow(diff, cmap='viridis')
+        ax.set_title("diff")
+        ax.axis('off')
+        fig.colorbar(im, ax=ax, orientation='vertical')
 
         ## fourth column is UNet(FBP(sino)) and diff
+        ax = axes[0, 3]
+        im = ax.imshow(unet_result, cmap='viridis')
+        ax.set_title("UNet(FBP(sino))")
+        ax.axis('off')
+        fig.colorbar(im, ax=ax, orientation='vertical')
+    
+        diff = unet_result - phantom[0, 0].detach().cpu()
+        ax = axes[1, 3]
+        im = ax.imshow(diff, cmap='viridis')
+        ax.set_title("diff")
+        ax.axis('off')
+        fig.colorbar(im, ax=ax, orientation='vertical')
+
+        ## save result
+        fig.savefig(os.path.join(results_dir, f'pipeline_{i}.png'))
 
         ## fifth column is ItNet((FBP(sino))) and diff
         print(f"Processed image {i+1}/{len(data_loader)}")
