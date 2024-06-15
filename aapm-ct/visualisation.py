@@ -142,7 +142,7 @@ with torch.no_grad():
         print("itnet_result shape:", itnet_result.shape)
 
         # Visualize and save combined image
-        fig, axes = plt.subplots(2, 4, figsize=(25, 25))
+        fig, axes = plt.subplots(2, 5, figsize=(15, 60))
 
         ## first column is sinogram and ground truth 
         ax = axes[0, 0]
@@ -195,6 +195,20 @@ with torch.no_grad():
     
         diff = unet_result - phantom[0, 0].detach().cpu()
         ax = axes[1, 3]
+        im = ax.imshow(diff, cmap='viridis')
+        ax.set_title("diff")
+        ax.axis('off')
+        fig.colorbar(im, ax=ax, orientation='vertical')
+
+        ## fifth column is ItNet((FBP(sino))) and diff
+        ax = axes[0, 4]
+        im = ax.imshow(itnet_result, cmap='viridis')
+        ax.set_title("ItNet(FBP(sino))")
+        ax.axis('off')
+        fig.colorbar(im, ax=ax, orientation='vertical')
+
+        diff = itnet_result - phantom[0, 0].detach().cpu()
+        ax = axes[1, 4]
         im = ax.imshow(diff, cmap='viridis')
         ax.set_title("diff")
         ax.axis('off')
