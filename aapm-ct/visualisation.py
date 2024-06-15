@@ -142,7 +142,7 @@ with torch.no_grad():
         print("itnet_result shape:", itnet_result.shape)
 
         # Visualize and save combined image
-        fig, axes = plt.subplots(2, 5, figsize=(25, 5))
+        fig, axes = plt.subplots(2, 4, figsize=(25, 25))
 
         ## first column is sinogram and ground truth 
         ax = axes[0, 0]
