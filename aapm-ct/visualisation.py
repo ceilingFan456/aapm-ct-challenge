@@ -132,12 +132,12 @@ with torch.no_grad():
         print("fbp_result shape:", fbp_result.shape)
 
         ## UNet result
-        unet_result = u_net((sinogram, phantom))
+        unet_result = u_net((phantom, sinogram))
         unet_result = unet_result[0, 0].detach().cpu()
         print("unet_result shape:", unet_result.shape)
 
         ## ItNet result
-        itnet_result = it_net((sinogram, phantom))
+        itnet_result = it_net((phantom, sinogram))
         itnet_result = itnet_result[0, 0].detach().cpu()
         print("itnet_result shape:", itnet_result.shape)
 
