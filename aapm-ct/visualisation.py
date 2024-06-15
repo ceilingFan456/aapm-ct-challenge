@@ -185,6 +185,9 @@ with torch.no_grad():
         ax.axis('off')
         fig.colorbar(im, ax=ax, orientation='vertical')
 
+        print(f_result.device)
+        print(sinogram.device)
+
         diff = f_result - sinogram[0, 0].detach().cpu()
         ax = axes[1, 1]
         im = ax.imshow(diff, cmap='viridis')
