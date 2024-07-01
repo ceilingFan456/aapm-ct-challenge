@@ -160,3 +160,5 @@ dmypy.json
 
 ./aapm-ct/data/*
 ./aapm-ct/real_data/*
+
+forward.*
