@@ -7,10 +7,10 @@
 #PBS -N forward 
 
 # Unload any currently loaded Python modules
-module unload python
+# module unload python
 
 # Load available modules
-module load python/3.8.13
+# module load python/3.8.13
 module load cuda/11.6.2
 module load pytorch/1.11.0-py3-gpu
 
