@@ -116,11 +116,6 @@ class CTDataset(torch.utils.data.Dataset):
         # self.sinogram = self.sinogram[:num]
         # self.fbp = self.fbp[:num]
 
-        print(f"DATAPATH={DATA_PATH}")
-        print(f"path={path}")
-        print(f"self.phantom.shape={self.phantom.shape}")
-        print(f"self.sinogram.shape={self.sinogram.shape}")
-
         # if not leave_out:
         #     self.phantom = self.phantom[:350]
         #     self.sinogram = self.sinogram[:350]
@@ -129,6 +124,12 @@ class CTDataset(torch.utils.data.Dataset):
         #     self.phantom = self.phantom[:100]
         #     self.sinogram = self.sinogram[:100]
         #     self.fbp = self.fbp[:100]
+
+        ## only use 1/fold fraction of data. 
+        num = self.phantom.shape[0] // folds
+        self.phantom = self.phantom[:num]
+        self.singogram = self.sinogram[:num]
+        self.fbp = self.fbp[:num]
 
         # split dataset for cross validation
         # fold_len = self.phantom.shape[0] // folds
@@ -145,6 +146,11 @@ class CTDataset(torch.utils.data.Dataset):
         # self.phantom = np.concatenate(p_list, axis=0)
         # self.sinogram = np.concatenate(s_list, axis=0)
         # self.fbp = np.concatenate(f_list, axis=0)
+
+        print(f"DATAPATH={DATA_PATH}")
+        print(f"path={path}")
+        print(f"self.phantom.shape={self.phantom.shape}")
+        print(f"self.sinogram.shape={self.sinogram.shape}")
 
         # transform numpy to torch tensor
         self.phantom = torch.tensor(self.phantom, dtype=torch.float)

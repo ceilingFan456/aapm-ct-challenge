@@ -95,13 +95,23 @@ train_params = {
 
 # always use same folds, num_fold for noth train and val
 # always use leave_out=True on train and leave_out=False on val data
+# train_data_params = {
+#     "folds": 32,
+#     "num_fold": job_id,
+#     "leave_out": True,
+# }
+# val_data_params = {
+#     "folds": 32,
+#     "num_fold": job_id,
+#     "leave_out": False,
+# }
 train_data_params = {
-    "folds": 32,
+    "folds": 4,
     "num_fold": job_id,
     "leave_out": True,
 }
 val_data_params = {
-    "folds": 32,
+    "folds": 4,
     "num_fold": job_id,
     "leave_out": False,
 }
