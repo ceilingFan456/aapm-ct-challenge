@@ -4,7 +4,7 @@
 #PBS -j oe
 #PBS -l select=1:ngpus=1
 #PBS -l walltime=01:00:00
-#PBS -N forward 
+#PBS -N fwd
 
 # Log the date and time
 echo "Job started at: $(date)"
