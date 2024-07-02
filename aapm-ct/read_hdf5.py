@@ -41,9 +41,9 @@ for folder in folders:
         ## modify data to have the square -> circle-> square shape
         old_size = data.shape[-1]
         new_size = int(np.ceil(old_size * np.sqrt(2)))
-        new_data = np.zeros((data.shape[0], new_size, new_size))
+        new_data = np.zeros((data.shape[0] // 100 , new_size, new_size))
         start_index = (new_size - old_size) // 2
-        new_data[:, start_index: start_index + old_size, start_index: start_index + old_size] = data
+        new_data[:, start_index: start_index + old_size, start_index: start_index + old_size] = data[data.shape[0] // 100, :, :]
 
         print(f"old_size={old_size}, new_size={new_size}, start_index={start_index}")
         print(f"old_shape={data.shape}, new_shape={new_data.shape}")
@@ -59,4 +59,4 @@ for folder in folders:
     elif folder.startswith("observation"):   
         output_path = os.path.join(output_directory, "Sinogram_batch1.npy.gz")
         with gzip.open(output_path, 'wb') as f:
-            np.save(f, data)
+            np.save(f, data[data.shape[0] //100, :, :])
