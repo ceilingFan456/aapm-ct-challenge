@@ -186,10 +186,10 @@ class InvNet(torch.nn.Module, metaclass=ABCMeta):
         def _implot(sub, im, vmin=None, vmax=None):
             if im.shape[-3] == 2:  # complex image
                 p = sub.imshow(
-                    torch.sqrt(im.pow(2).sum(-3))[0, :, :].detach().cpu()
+                    torch.sqrt(im.pow(2).sum(-3))[0, :, :].detach().cpu(), cmap='gray'
                 )
             else:  # real image
-                p = sub.imshow(im[0, 0, :, :].detach().cpu())
+                p = sub.imshow(im[0, 0, :, :].detach().cpu(), cmap='gray')
             return p
 
         fig, subs = plt.subplots(2, 3, clear=True, num=1, figsize=(15, 10))
@@ -602,10 +602,10 @@ class RadonNet(InvNet):
         def _implot(sub, im, vmin=None, vmax=None):
             if im.shape[-3] == 2:  # complex image
                 p = sub.imshow(
-                    torch.sqrt(im.pow(2).sum(-3))[0, :, :].detach().cpu(), vmin=vmin, vmax=vmax
+                    torch.sqrt(im.pow(2).sum(-3))[0, :, :].detach().cpu(), cmap='gray', vmin=vmin, vmax=vmax
                 )
             else:  # real image
-                p = sub.imshow(im[0, 0, :, :].detach().cpu(), vmin=vmin, vmax=vmax)
+                p = sub.imshow(im[0, 0, :, :].detach().cpu(), cmap='gray', vmin=vmin, vmax=vmax)
             return p
 
         if self.mode == "fwd" or self.mode == "bwd":
