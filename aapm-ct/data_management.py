@@ -107,14 +107,14 @@ class CTDataset(torch.utils.data.Dataset):
         assert self.phantom.shape[0] == self.sinogram.shape[0]
         assert self.phantom.shape[0] == self.fbp.shape[0]
 
-        ## using only 1/4 for faster training
-        if leave_out:
-            num = 700 // 4
-        if not leave_out:
-            num = 200 // 4
-        self.phantom = self.phantom[:num]
-        self.sinogram = self.sinogram[:num]
-        self.fbp = self.fbp[:num]
+        # ## using only 1/4 for faster training
+        # if leave_out:
+        #     num = 700 // 4
+        # if not leave_out:
+        #     num = 200 // 4
+        # self.phantom = self.phantom[:num]
+        # self.sinogram = self.sinogram[:num]
+        # self.fbp = self.fbp[:num]
 
         print(f"DATAPATH={DATA_PATH}")
         print(f"path={path}")
