@@ -128,7 +128,7 @@ class CTDataset(torch.utils.data.Dataset):
         ## only use 1/fold fraction of data. 
         num = self.phantom.shape[0] // folds
         self.phantom = self.phantom[:num]
-        self.singogram = self.sinogram[:num]
+        self.sinogram = self.sinogram[:num]
         self.fbp = self.fbp[:num]
 
         # split dataset for cross validation
