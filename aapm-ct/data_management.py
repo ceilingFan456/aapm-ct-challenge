@@ -104,9 +104,6 @@ class CTDataset(torch.utils.data.Dataset):
         else:
             self.phantom = 0.0 * self.fbp  # no ground truth data exists here
 
-        assert self.phantom.shape[0] == self.sinogram.shape[0]
-        assert self.phantom.shape[0] == self.fbp.shape[0]
-
         # ## using only 1/4 for faster training
         # if leave_out:
         #     num = 700 // 4
@@ -151,6 +148,9 @@ class CTDataset(torch.utils.data.Dataset):
         print(f"path={path}")
         print(f"self.phantom.shape={self.phantom.shape}")
         print(f"self.sinogram.shape={self.sinogram.shape}")
+
+        assert self.phantom.shape[0] == self.sinogram.shape[0]
+        assert self.phantom.shape[0] == self.fbp.shape[0]
 
         # transform numpy to torch tensor
         self.phantom = torch.tensor(self.phantom, dtype=torch.float)
