@@ -51,8 +51,8 @@ dc_operator = DCLsqFPB(operator)
 dc_operator.freeze()
 
 it_net_params = {
-    "num_iter": 3,
-    "lam": [1.1183, 1.3568, 1.4271],
+    "num_iter": 4,
+    "lam": 4 * [0.0],
     "lam_learnable": True,
     "final_dc": True,
     "resnet_factor": 1.0,
@@ -77,14 +77,14 @@ train_params = {
     "save_path": [
         os.path.join(
             config.RESULTS_PATH,
-            "ItNet_3_mem_id{}_"
+            "ItNet_3_mem_restart_id{}_"
             "train_phase_{}".format(job_id, (i + 1) % (train_phases + 1)),
         )
         for i in range(train_phases + 1)
     ],
     "save_epochs": 1,
     "optimizer": torch.optim.Adam,
-    "optimizer_params": [{"lr": 8e-5, "eps": 1e-5, "weight_decay": 1e-4}],
+    "optimizer_params": [{"lr": 3e-5, "eps": 1e-5, "weight_decay": 1e-4}],
     "scheduler": torch.optim.lr_scheduler.StepLR,
     "scheduler_params": {"step_size": 2, "gamma": 0.99},
     "acc_steps": [1],
@@ -96,16 +96,6 @@ train_params = {
 
 # always use same folds, num_fold for noth train and val
 # always use leave_out=True on train and leave_out=False on val data
-# train_data_params = {
-#     "folds": 32,
-#     "num_fold": job_id,
-#     "leave_out": True,
-# }
-# val_data_params = {
-#     "folds": 32,
-#     "num_fold": job_id,
-#     "leave_out": False,
-# }
 train_data_params = {
     "folds": 1,
     "num_fold": job_id,
@@ -138,36 +128,26 @@ with open(
 
 # ------ construct network and train -----
 subnet_tmp = subnet(**subnet_params).to(device)
-
-it_net_tmp = IterativeNet(
-    subnet_tmp,
-    **{
-        "num_iter": 1,
-        "lam": 0.0,
-        "lam_learnable": False,
-        "final_dc": False,
-        "resnet_factor": 1.0,
-        "use_memory": 5,
-    }
+it_net = IterativeNet(
+    it_net_params["num_iter"] * [subnet_tmp], **it_net_params
 ).to(device)
-it_net_tmp.load_state_dict(
+it_net.load_state_dict(
     torch.load(
         os.path.join(
             config.RESULTS_PATH,
-            "UNet_mem_id{}_train_phase_1".format(job_id),
+            "ItNet_3_mem_id{}_train_phase_1".format(job_id),
             "model_weights_final.pt",
         ),
         map_location=torch.device(device),
     )
 )
 
-it_net = IterativeNet(
-    it_net_params["num_iter"] * [it_net_tmp.subnet], **it_net_params
-).to(device)
-
 log = pd.DataFrame(
     columns=["loss", "val_loss", "rel_l2_error", "val_rel_l2_error"]
 )
+
+for i in range(it_net_params["num_iter"]):
+    print(it_net.lam[i], flush=True)
 
 for i in range(train_phases):
     train_params_cur = {}
@@ -181,9 +161,9 @@ for i in range(train_phases):
         print(key + ": " + str(value))
 
     logging = it_net.train_on(train_data, val_data, **train_params_cur)
-    log = pd.concat([log, logging], ignore_index=True)   
+    log = pd.concat([log, logging], ignore_index=True)
 
-logging.to_csv('itnet_3_log.csv', index=False)
+logging.to_csv('itnet_3_restart_log.csv', index=False)
 
 
 # ----- pick best weights and save them ----
