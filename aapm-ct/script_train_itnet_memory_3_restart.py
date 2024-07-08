@@ -51,8 +51,8 @@ dc_operator = DCLsqFPB(operator)
 dc_operator.freeze()
 
 it_net_params = {
-    "num_iter": 4,
-    "lam": 4 * [0.0],
+    "num_iter": 3,
+    "lam": 3 * [0.0],
     "lam_learnable": True,
     "final_dc": True,
     "resnet_factor": 1.0,
