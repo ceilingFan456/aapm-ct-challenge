@@ -179,7 +179,7 @@ for i in range(iter_preinit, iter_max):
         torch.load(
             os.path.join(
                 config.RESULTS_PATH,
-                "ItNet_mem_restart_id{}_train_phase_1".format(job_id),
+                "ItNet_3_mem_restart_id{}_train_phase_1".format(job_id),
                 "model_weights_final.pt",
             ),
             map_location=torch.device(device),
