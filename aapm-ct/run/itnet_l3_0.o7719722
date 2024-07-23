@@ -1,0 +1,74 @@
+Job started at: Fri Jul  5 10:14:59 +08 2024
+/var/spool/pbs/mom_priv/jobs/7719722.pbs101.SC: line 13: codna: command not found
+/home/users/nus/e0271228/aapm-ct-challenge/aapm-ct/operators.py:313: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  self.n = torch.nn.Parameter(torch.tensor(n), requires_grad=False)
+/home/users/nus/e0271228/aapm-ct-challenge/aapm-ct/operators.py:327: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  torch.tensor(n_detect), requires_grad=False
+DATAPATH=raw_data
+path=raw_data/training_data
+self.phantom.shape=(700, 512, 512)
+self.sinogram.shape=(700, 128, 1024)
+DATAPATH=raw_data
+path=raw_data/training_data
+self.phantom.shape=(700, 512, 512)
+self.sinogram.shape=(700, 128, 1024)
+DATAPATH=raw_data
+path=raw_data/training_data
+self.phantom.shape=(700, 512, 512)
+self.sinogram.shape=(700, 128, 1024)
+DATAPATH=raw_data
+path=raw_data/training_data
+self.phantom.shape=(700, 512, 512)
+self.sinogram.shape=(700, 128, 1024)
+DATAPATH=raw_data
+path=raw_data/validation_data
+self.phantom.shape=(200, 512, 512)
+self.sinogram.shape=(200, 128, 1024)
+DATAPATH=raw_data
+path=raw_data/validation_data
+self.phantom.shape=(200, 512, 512)
+self.sinogram.shape=(200, 128, 1024)
+DATAPATH=raw_data
+path=raw_data/validation_data
+self.phantom.shape=(200, 512, 512)
+self.sinogram.shape=(200, 128, 1024)
+DATAPATH=raw_data
+path=raw_data/validation_data
+self.phantom.shape=(200, 512, 512)
+self.sinogram.shape=(200, 128, 1024)
+Traceback (most recent call last):
+  File "/home/users/nus/e0271228/aapm-ct-challenge/aapm-ct/script_train_itnet_memory_3_restart.py", line 134, in <module>
+    it_net.load_state_dict(
+  File "/home/users/nus/e0271228/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 2189, in load_state_dict
+    raise RuntimeError('Error(s) in loading state_dict for {}:\n\t{}'.format(
+RuntimeError: Error(s) in loading state_dict for IterativeNet:
+	Missing key(s) in state_dict: "subnet.3.encoder1.encoding_1conv1.weight", "subnet.3.encoder1.encoding_1conv1.bias", "subnet.3.encoder1.encoding_1bn_1.weight", "subnet.3.encoder1.encoding_1bn_1.bias", "subnet.3.encoder1.encoding_1conv2.weight", "subnet.3.encoder1.encoding_1conv2.bias", "subnet.3.encoder1.encoding_1bn_2.weight", "subnet.3.encoder1.encoding_1bn_2.bias", "subnet.3.encoder2.encoding_2conv1.weight", "subnet.3.encoder2.encoding_2conv1.bias", "subnet.3.encoder2.encoding_2bn_1.weight", "subnet.3.encoder2.encoding_2bn_1.bias", "subnet.3.encoder2.encoding_2conv2.weight", "subnet.3.encoder2.encoding_2conv2.bias", "subnet.3.encoder2.encoding_2bn_2.weight", "subnet.3.encoder2.encoding_2bn_2.bias", "subnet.3.encoder3.encoding_3conv1.weight", "subnet.3.encoder3.encoding_3conv1.bias", "subnet.3.encoder3.encoding_3bn_1.weight", "subnet.3.encoder3.encoding_3bn_1.bias", "subnet.3.encoder3.encoding_3conv2.weight", "subnet.3.encoder3.encoding_3conv2.bias", "subnet.3.encoder3.encoding_3bn_2.weight", "subnet.3.encoder3.encoding_3bn_2.bias", "subnet.3.encoder4.encoding_4conv1.weight", "subnet.3.encoder4.encoding_4conv1.bias", "subnet.3.encoder4.encoding_4bn_1.weight", "subnet.3.encoder4.encoding_4bn_1.bias", "subnet.3.encoder4.encoding_4conv2.weight", "subnet.3.encoder4.encoding_4conv2.bias", "subnet.3.encoder4.encoding_4bn_2.weight", "subnet.3.encoder4.encoding_4bn_2.bias", "subnet.3.bottleneck.bottleneckconv1.weight", "subnet.3.bottleneck.bottleneckconv1.bias", "subnet.3.bottleneck.bottleneckbn_1.weight", "subnet.3.bottleneck.bottleneckbn_1.bias", "subnet.3.bottleneck.bottleneckconv2.weight", "subnet.3.bottleneck.bottleneckconv2.bias", "subnet.3.bottleneck.bottleneckbn_2.weight", "subnet.3.bottleneck.bottleneckbn_2.bias", "subnet.3.upconv4.weight", "subnet.3.upconv4.bias", "subnet.3.decoder4.decoding_4conv1.weight", "subnet.3.decoder4.decoding_4conv1.bias", "subnet.3.decoder4.decoding_4bn_1.weight", "subnet.3.decoder4.decoding_4bn_1.bias", "subnet.3.decoder4.decoding_4conv2.weight", "subnet.3.decoder4.decoding_4conv2.bias", "subnet.3.decoder4.decoding_4bn_2.weight", "subnet.3.decoder4.decoding_4bn_2.bias", "subnet.3.upconv3.weight", "subnet.3.upconv3.bias", "subnet.3.decoder3.decoding_3conv1.weight", "subnet.3.decoder3.decoding_3conv1.bias", "subnet.3.decoder3.decoding_3bn_1.weight", "subnet.3.decoder3.decoding_3bn_1.bias", "subnet.3.decoder3.decoding_3conv2.weight", "subnet.3.decoder3.decoding_3conv2.bias", "subnet.3.decoder3.decoding_3bn_2.weight", "subnet.3.decoder3.decoding_3bn_2.bias", "subnet.3.upconv2.weight", "subnet.3.upconv2.bias", "subnet.3.decoder2.decoding_2conv1.weight", "subnet.3.decoder2.decoding_2conv1.bias", "subnet.3.decoder2.decoding_2bn_1.weight", "subnet.3.decoder2.decoding_2bn_1.bias", "subnet.3.decoder2.decoding_2conv2.weight", "subnet.3.decoder2.decoding_2conv2.bias", "subnet.3.decoder2.decoding_2bn_2.weight", "subnet.3.decoder2.decoding_2bn_2.bias", "subnet.3.upconv1.weight", "subnet.3.upconv1.bias", "subnet.3.decoder1.decoding_1conv1.weight", "subnet.3.decoder1.decoding_1conv1.bias", "subnet.3.decoder1.decoding_1bn_1.weight", "subnet.3.decoder1.decoding_1bn_1.bias", "subnet.3.decoder1.decoding_1conv2.weight", "subnet.3.decoder1.decoding_1conv2.bias", "subnet.3.decoder1.decoding_1bn_2.weight", "subnet.3.decoder1.decoding_1bn_2.bias", "subnet.3.outconv.weight", "subnet.3.outconv.bias", "lam.3". 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			Resource Usage on 2024-07-05 10:16:06.958182:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	JobId: 7719722.pbs101
+	Project: personal-e0271228
+	Exit Status: 1
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	NCPUs: Requested(16), Used(16)
+	CPU Time Used: 00:00:49
+	Memory: Requested(110gb), Used(9912324kb)
+	Vmem Used: 16792664kb
+	Walltime: Requested(24:00:00), Used(00:01:08)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	Execution Nodes Used: (x1000c1s0b0n0:ngpus=1:ncpus=16:mem=115343360kb)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	GPU Duration: 1.16mins
+	GPU Energy Consumed: 48.87W
+	GPU Max GPU Memory Used: 416.0MB
+	Memory Throughput Rate (Average): x1000c1s0b0n0:(gpu0:0%)
+	Memory Throughput Rate (Max): x1000c1s0b0n0:(gpu0:0%)
+	Memory Throughput Rate (Min): x1000c1s0b0n0:(gpu0:0%)
+	GPU SM Utilization (Average): x1000c1s0b0n0:(gpu0:0%)
+	GPU SM Utilization (Max): x1000c1s0b0n0:(gpu0:0%)
+	GPU SM Utilization (Min): x1000c1s0b0n0:(gpu0:0%)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Warning: All GPUs have a percentage of 0 utilisation.
+GPU application profile: Idle
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
